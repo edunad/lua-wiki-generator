@@ -16,7 +16,18 @@ jobs:
               with:
                   node-version: '18.x'
                   registry-url: 'https://npm.pkg.github.com'
-            - run: yarn
+            - name: Get yarn cache directory path
+              id: yarn-cache-dir-path
+              run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+            - uses: actions/cache@v2
+              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+              with:
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn
+            - run: yarn install --immutable
             - run: yarn test
             - run: YARN_VERSION_GIT_TAG=''
             - run: npm version --no-git-tag-version --new-version 1.0.0-${{ github.sha }} --no-git-tag-version
