@@ -31,13 +31,13 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-yarn-
 
-              run: yarn install
-              run: yarn test:coverage
+            - run: yarn install
+            - run: yarn test:coverage
 
-              run: YARN_VERSION_GIT_TAG=''
-              run: npm version --no-git-tag-version --new-version 1.0.0-${{ github.sha }} --no-git-tag-version
-              run: yarn build
-              run: cd ./.bin && npm publish
+            - run: YARN_VERSION_GIT_TAG=''
+            - run: npm version --no-git-tag-version --new-version 1.0.0-${{ github.sha }} --no-git-tag-version
+            - run: yarn build
+            - run: cd ./.bin && npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
