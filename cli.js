@@ -1,19 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
-import fs from 'fs-extra';
+const { hideBin } = require('yargs/helpers');
+const { readFile } = require('fs-extra');
 
-import IASWikiExtract from './index.js';
-import pck from './package.json' assert { type: 'json' };
+const IASWikiExtract = require('./index.js');
+const pck = require('./package.json');
 
 process.stdout.write('\u001b[2J\u001b[0;0H'); // Clear screen
 console.debug(`┬  ┬ ┬┌─┐   ┬ ┬┬┬┌─┬   ┌─┐┌─┐┌┐┌┌─┐┬─┐┌─┐┌┬┐┌─┐┬─┐`);
 console.debug(`│  │ │├─┤───││││├┴┐│───│ ┬├┤ │││├┤ ├┬┘├─┤ │ │ │├┬┘`);
 console.debug(`┴─┘└─┘┴ ┴   └┴┘┴┴ ┴┴   └─┘└─┘┘└┘└─┘┴└─┴ ┴ ┴ └─┘┴└─ | Ver: \x1b[35m%s\x1b[0m\n`, pck.version);
 
-yargs(hideBin(process.argv)) // eslint-disable-line
+require('yargs')(hideBin(process.argv)) // eslint-disable-line
     .scriptName('lua-wiki-generator')
     .usage('$0 <cmd> [args]')
     .option('path', {
@@ -55,10 +54,10 @@ yargs(hideBin(process.argv)) // eslint-disable-line
         if (!argv.extension) throw new Error('Missing extension template path');
         if (!argv.summary) throw new Error('Missing summary template path');
 
-        const methodTemplate = await fs.readFile(argv.method, 'utf8');
-        const classTemplate = await fs.readFile(argv.class, 'utf8');
-        const extensionTemplate = await fs.readFile(argv.extension, 'utf8');
-        const summaryTemplate = await fs.readFile(argv.summary, 'utf8');
+        const methodTemplate = await readFile(argv.method, 'utf8');
+        const classTemplate = await readFile(argv.class, 'utf8');
+        const extensionTemplate = await readFile(argv.extension, 'utf8');
+        const summaryTemplate = await readFile(argv.summary, 'utf8');
 
         await new IASWikiExtract(argv.path, argv.out, {
             summary: summaryTemplate,

@@ -1,2 +1,2 @@
-import { IASWikiExtract } from './src/generator.js';
-export default IASWikiExtract;
+const IASWikiExtract = require('./src/generator.js');
+module.exports = IASWikiExtract;

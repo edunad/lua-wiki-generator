@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-export class MDExtension {
+class MDExtension {
     #outputFolder;
     #template;
 
@@ -101,3 +101,5 @@ export class MDExtension {
         return template.replace('$EXAMPLE$', example);
     };
 }
+
+module.exports = MDExtension;

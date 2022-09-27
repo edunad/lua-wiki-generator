@@ -7,23 +7,22 @@
         "url": "https://github.com/edunad/lua-wiki-generator"
     },
     "license": "MIT",
-    "type": "module",
-    "main": "./cli.js",
+    "main": "./index.js",
+    "bin": "./cli.js",
     "engines": {
         "npm": "Please use yarn",
         "node": ">=17.0.0"
     },
-    "bin": "./cli.js",
     "scripts": {
         "start": "node ./cli.js",
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-        "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --collect-coverage",
+        "test": "jest",
+        "test:coverage": "jest --collect-coverage",
         "build": "webpack --config webpack.config.js --progress --mode production"
     },
     "devDependencies": {
-        "copy-webpack-plugin": "^10.2.4",
-        "webpack": "^5.71.0",
-        "webpack-cli": "^4.9.2",
+        "copy-webpack-plugin": "^11.0.0",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0",
         "webpack-node-externals": "^3.0.0"
     },
     "dependencies": {

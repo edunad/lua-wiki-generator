@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-import fs from 'fs-extra';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+const fs = require('fs-extra');
+const { resolve } = require('path');
 
-import { MDClass } from '../src/md-generators/class.js';
-import { LuaParser } from '../src/parser.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const MDClass = require('../src/md-generators/class.js');
+const LuaParser = require('../src/parser.js');
 
 const CLASS_TEMPLATE_FILE = './__test_templates__/CLASS_TEMPLATE.md';
 

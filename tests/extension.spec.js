@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-import fs from 'fs-extra';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+const fs = require('fs-extra');
+const { resolve } = require('path');
 
-import { MDExtension } from '../src/md-generators/extension';
-import { LuaParser } from '../src/parser.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const MDExtension = require('../src/md-generators/extension.js');
+const LuaParser = require('../src/parser.js');
 
 const EXTENSION_TEMPLATE_FILE = './__test_templates__/EXTENSION_TEMPLATE.md';
 

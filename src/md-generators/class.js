@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-export class MDClass {
+class MDClass {
     #outputFolder;
     #template;
 
@@ -69,3 +69,5 @@ export class MDClass {
         return template.replace('$FIELDS$', fields);
     };
 }
+
+module.exports = MDClass;

@@ -1,12 +1,8 @@
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+const { resolve } = require('path');
 
-import webpack from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import nodeExternals from 'webpack-node-externals';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 let config = {
     devtool: 'source-map',
@@ -23,7 +19,8 @@ let config = {
     output: {
         path: resolve(__dirname, './.bin'),
         filename: '[name].js',
-        libraryTarget: 'umd',
+        library: 'IASWikiExtract',
+        libraryTarget: 'commonjs',
 
         clean: true, // Clean the output directory before emit.
     },
@@ -37,15 +34,16 @@ let config = {
         cacheWithContext: false,
     },
 
+    stats: {
+        warningsFilter: /export .* was not found in/,
+    },
+
     optimization: {
         splitChunks: {
             chunks: 'all',
         },
     },
 
-    stats: {
-        warningsFilter: /export .* was not found in/,
-    },
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -57,7 +55,7 @@ let config = {
     ],
 };
 
-export default (env, argv) => {
+module.exports = (env, argv) => {
     const production = argv.mode === 'production';
     if (production) config.devtool = false;
 

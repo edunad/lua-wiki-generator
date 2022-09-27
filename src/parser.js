@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-import fs from 'fs';
-import readline from 'readline';
-import events from 'events';
+const fs = require('fs-extra');
+const readline = require('readline');
+const events = require('events');
 
-export class LuaParser {
+class LuaParser {
     #currentCommentBlock;
     #currentMode;
     #parsedBlocks;
@@ -262,3 +262,5 @@ export class LuaParser {
         }
     };
 }
+
+module.exports = LuaParser;

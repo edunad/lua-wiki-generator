@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-export class MDMethod {
+class MDMethod {
     #outputFolder;
     #template;
 
@@ -104,3 +104,5 @@ export class MDMethod {
         return template.replace('$EXAMPLE$', example);
     };
 }
+
+module.exports = MDMethod;

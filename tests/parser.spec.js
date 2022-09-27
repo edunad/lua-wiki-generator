@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-import { LuaParser } from '../src/parser.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const { resolve } = require('path');
+const LuaParser = require('../src/parser.js');
 
 describe('LUAParser', () => {
     it('Parses classes', async () => {

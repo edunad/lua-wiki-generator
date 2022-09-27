@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 'use strict';
 
-import fs from 'fs-extra';
-import glob from 'glob';
-import { basename, resolve } from 'path';
+const fs = require('fs-extra');
+const glob = require('glob');
+const { basename } = require('path');
 
-import { LuaParser } from './parser.js';
+const LuaParser = require('./parser.js');
 
-import { MDClass } from './md-generators/class.js';
-import { MDExtension } from './md-generators/extension.js';
-import { MDMethod } from './md-generators/method.js';
+const MDClass = require('./md-generators/class.js');
+const MDExtension = require('./md-generators/extension.js');
+const MDMethod = require('./md-generators/method.js');
 
-export class IASWikiExtract {
+class IASWikiExtract {
     #libPath;
     #outputPath;
     #templates;
@@ -129,3 +129,5 @@ export class IASWikiExtract {
         return summaryMap;
     };
 }
+
+module.exports = IASWikiExtract;
