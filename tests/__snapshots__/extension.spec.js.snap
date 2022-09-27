@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MDGenerators Generates a Extension MD 1`] = `
+"## ![client](.gitbook/assets/client.png) math.isNan
+
+
+
+\`\`\`lua
+boolean math.isNan(val)
+\`\`\`
+
+Returns true if the number is NaN (not a number)
+
+------
+## Parameters
+
+| Type   | Name | Description | Optional |
+| ------ | ---- | ----------- | -------: |
+| number | val | No description |  |
+
+------
+## Returns
+
+| Type   | Description |
+| ------ | ----------: |
+| boolean | If its NaN |
+
+"
+`;

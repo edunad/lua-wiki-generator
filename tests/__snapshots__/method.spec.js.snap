@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MDGenerators Generates a Method MD 1`] = `
+"## ![shared](.gitbook/assets/shared.png) [console](./home/console)
+
+{% hint style="@warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
+{% hint style="@danger" %} OH NOOOOOOO {% endhint %}
+
+
+\`\`\`lua
+boolean, string console:execute(args)
+\`\`\`
+
+Executes a console command programmatically
+\`\`\`lua
+--my_command is the command to execute, true is a parameter
+console:execute({"my_command", "true"})
+\`\`\`
+
+------
+## Parameters
+
+| Type   | Name | Description | Optional |
+| ------ | ---- | ----------- | -------: |
+| string[] | args | No description |  |
+
+------
+## Returns
+
+| Type   | Description |
+| ------ | ----------: |
+| boolean | If command was executed successfully |
+| string | No description |
+
+"
+`;

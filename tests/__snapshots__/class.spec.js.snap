@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MDGenerators Generates a Class MD 1`] = `
+"## ![shared](.gitbook/assets/shared.png) ![Base](.gitbook/assets/base.png) AABB
+
+
+AABB's entry class
+------
+## Fields
+
+| Type   | Name |
+| ------ | ---: |
+| [Vector](./home/Vector) | pos |
+| [Vector](./home/Vector) | size |
+
+"
+`;
