@@ -1,6 +1,7 @@
 # lua-wiki-generator
 
 [![Publish package to GitHub Packages](https://github.com/edunad/lua-wiki-generator/actions/workflows/release.yaml/badge.svg)](https://github.com/edunad/lua-wiki-generator/actions/workflows/release.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/edunad/lua-wiki-generator/badge.svg?branch=master)](https://coveralls.io/github/edunad/lua-wiki-generator?branch=master)
 
 Generates a **MARKDOWN** wiki using [sumneko's lua extension](https://github.com/sumneko/lua-language-server) documentation format.
 
