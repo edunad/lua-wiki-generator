@@ -39,10 +39,10 @@ jobs:
             - run: yarn test:coverage
 
             - run: YARN_VERSION_GIT_TAG=''
-            - run: npm version minor --no-git-tag-version
+            - run: npm version patch --no-git-tag-version
 
             - run: yarn build
-            - run: cd ./.bin && npm publish
+            - run: cd ./.bin && npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
