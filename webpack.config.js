@@ -19,7 +19,7 @@ let config = {
     output: {
         path: resolve(__dirname, './.bin'),
         filename: '[name].js',
-        library: 'IASWikiExtract',
+        library: 'WikiExtract',
         libraryTarget: 'commonjs',
 
         clean: true, // Clean the output directory before emit.
