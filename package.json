@@ -1,7 +1,7 @@
 {
     "name": "@edunad/lua-wiki-generator",
     "packageManager": "yarn@3.2.3",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "FailCake (edunad)",
     "private": false,
     "repository": {

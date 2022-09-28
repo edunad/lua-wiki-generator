@@ -1,4 +1,4 @@
-name: Publish package
+name: CI / CD
 on:
     push:
         branches: master
@@ -9,9 +9,6 @@ permissions:
 jobs:
     build:
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
         steps:
             - uses: actions/checkout@v3
               with:
@@ -28,7 +25,7 @@ jobs:
               run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
             - uses: actions/cache@v3
-              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+              id: yarn-cache
               with:
                   path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -48,9 +45,9 @@ jobs:
 
             - name: Commit files
               run: |
-                  git config --local user.email "$GITHUB_ACTOR+github-actions[bot]@users.noreply.github.com"
-                  git config --local user.name "$GITHUB_ACTOR"
-                  git commit --allow-empty -m "Version Bump"
+                  git config --local user.email "4944278+github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  git commit --allow-empty -m "Version Bump" -a
                   git push origin master
 
             - name: Coveralls

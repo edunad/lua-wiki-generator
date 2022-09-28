@@ -1,7 +1,8 @@
 # lua-wiki-generator
 
 [![Publish package to GitHub Packages](https://github.com/edunad/lua-wiki-generator/actions/workflows/release.yaml/badge.svg)](https://github.com/edunad/lua-wiki-generator/actions/workflows/release.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/edunad/lua-wiki-generator/badge.svg?branch=master)](https://coveralls.io/github/edunad/lua-wiki-generator?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/edunad/lua-wiki-generator/badge.svg?branch=master)](https://coveralls.io/github/edunad/lua-wiki-generator?branch=master)⠀⠀⠀⠀
+[![npm version](https://badge.fury.io/js/%40edunad%2Flua-wiki-generator.svg)](https://badge.fury.io/js/%40edunad%2Flua-wiki-generator)
 
 Generates a **MARKDOWN** wiki using [sumneko's lua extension](https://github.com/sumneko/lua-language-server) documentation format.
 
@@ -27,7 +28,7 @@ npm install @edunad/lua-wiki-generator --dev
 
 ```js
 const fs = require('fs');
-const { IASWikiExtract } = require('@edunad/lua-wiki-generator');
+const { WikiExtract } = require('@edunad/lua-wiki-generator');
 
 const init = () => {
     const methodTemplate = fs.readFileSync('./md-templates/METHOD_TEMPLATE.md', 'utf8');
@@ -35,7 +36,7 @@ const init = () => {
     const extensionTemplate = fs.readFileSync('./md-templates/EXTENSION_TEMPLATE.md', 'utf8');
     const summaryTemplate = fs.readFileSync('./md-templates/SUMMARY_TEMPLATE.md', 'utf8');
 
-    new IASWikiExtract('./ias-lib/**/*.lua', './home', {
+    new WikiExtract('./ias-lib/**/*.lua', './home', {
         summary: summaryTemplate,
         method: methodTemplate,
         class: classTemplate,
