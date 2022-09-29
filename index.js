@@ -11,7 +11,7 @@
  * @param {string} options.templates.class
  * @param {string} options.templates.extension
  * @param {string} options.templates.summary
- * @param {function(parseField: string, data: object)} options.mdLinkParser
+ * @param {function(parseField: string, outputFolder: string, data: object): string} options.mdLinkParser
  * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]} options.mdTextParser
  */
 module.exports = require('./src/generator.js');

@@ -30,7 +30,7 @@ Simple usage:
 
 ```js
 const fs = require('fs');
-const WikiExtract = require('@edunad/lua-wiki-generator');
+const { WikiExtract } = require('@edunad/lua-wiki-generator');
 
 const init = () => {
     const methodTemplate = fs.readFileSync('./md-templates/METHOD_TEMPLATE.md', 'utf8');
@@ -55,7 +55,7 @@ Custom usage:
 
 ```js
 const fs = require('fs');
-const WikiExtract = require('@edunad/lua-wiki-generator');
+const { WikiExtract } = require('@edunad/lua-wiki-generator');
 
 const init = () => {
     const methodTemplate = fs.readFileSync('./md-templates/METHOD_TEMPLATE.md', 'utf8');
