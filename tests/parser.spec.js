@@ -148,7 +148,9 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.fields.length).toBe(0);
 
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.hints.length).toBe(0);
+        expect(data.blocks[0].commentBlock.hints.length).toBe(1);
+        expect(data.blocks[0].commentBlock.hints[0].message).toBe('OH NOOOOOOO');
+        expect(data.blocks[0].commentBlock.hints[0].type).toBe('@success');
 
         expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.returns.length).toBe(1);

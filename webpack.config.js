@@ -2,7 +2,7 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
+const NodeExternals = require('webpack-node-externals');
 
 let config = {
     devtool: 'source-map',
@@ -12,13 +12,14 @@ let config = {
     },
 
     target: 'node',
-    externals: [nodeExternals()],
+    externals: [NodeExternals()],
     externalsPresets: { node: true },
     bail: true,
 
     output: {
         path: resolve(__dirname, './.bin'),
         filename: '[name].js',
+
         library: 'WikiExtract',
         libraryTarget: 'commonjs',
 
@@ -30,8 +31,6 @@ let config = {
         modules: ['node_modules'],
         alias: {},
         plugins: [],
-        symlinks: false,
-        cacheWithContext: false,
     },
 
     stats: {
@@ -39,6 +38,7 @@ let config = {
     },
 
     optimization: {
+        minimize: false,
         splitChunks: {
             chunks: 'all',
         },
@@ -57,7 +57,6 @@ let config = {
 
 module.exports = (env, argv) => {
     const production = argv.mode === 'production';
-    if (production) config.devtool = false;
 
     return new Promise(function (resolve, reject) {
         config.plugins.push(

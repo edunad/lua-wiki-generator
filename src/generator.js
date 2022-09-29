@@ -2,81 +2,103 @@
 'use strict';
 
 const fs = require('fs-extra');
-const glob = require('glob');
+const glob = require('fast-glob');
 const { basename } = require('path');
 
 const LuaParser = require('./parser.js');
+const MDGenerator = require('./md.js');
+const SummaryGenerator = require('./summary.js');
 
-const MDClass = require('./md-generators/class.js');
-const MDExtension = require('./md-generators/extension.js');
-const MDMethod = require('./md-generators/method.js');
-
-class IASWikiExtract {
+/**
+ * Extract class
+ * @class
+ */
+module.exports = class WikiExtract {
     #libPath;
     #outputPath;
-    #templates;
+    #options;
 
-    constructor(libPath, outputPath, templates) {
-        if (!libPath) throw new Error('Missing lib path');
-        if (!outputPath) throw new Error('Missing output path');
+    /**
+     * @constructor
+     * @param {string} libPath - the input folder with the lua lib (supports glob)
+     * @param {string} outputPath - the output folder
+     * @param {object} options - options
+     * @param {boolean} options.clean - if it should clean the output folder
+     * @param {object} options.templates - templates
+     * @param {string} options.templates.method
+     * @param {string} options.templates.class
+     * @param {string} options.templates.extension
+     * @param {string} options.templates.summary
+     * @param {function(parseField: string, outputFolder: string, data: object): string} options.mdLinkParser
+     * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]} options.mdTextParser
+     */
+    constructor(libPath, outputPath, options) {
+        if (!libPath) throw new Error('[WikiExtract] Missing lib path');
+        if (!outputPath) throw new Error('[WikiExtract] Missing output path');
 
-        if (!templates) throw new Error('Missing templates');
-        if (!templates.method) throw new Error('Missing method template path');
-        if (!templates.class) throw new Error('Missing class template path');
-        if (!templates.extension) throw new Error('Missing extension template path');
-        if (!templates.summary) throw new Error('Missing summary template path');
+        if (!options.templates) throw new Error('[WikiExtract] Missing templates');
+        if (!options.templates.method) throw new Error('[WikiExtract] Missing method template path');
+        if (!options.templates.class) throw new Error('[WikiExtract] Missing class template path');
+        if (!options.templates.extension) throw new Error('[WikiExtract] Missing extension template path');
+        if (!options.templates.summary) throw new Error('[WikiExtract] Missing summary template path');
+
+        // Setup method overrides
+        MDGenerator.setTextMDParser(options.mdTextParser);
+        MDGenerator.setLinkMDParser(options.mdLinkParser);
+        SummaryGenerator.setLinkMDParser(options.mdLinkParser);
+        // ---
 
         this.#libPath = libPath;
         this.#outputPath = outputPath;
-        this.#templates = templates;
+        this.#options = options;
     }
 
+    /**
+     * Reads lua files comments and generates markdown files
+     * @returns {Promise<void>}
+     */
     extract = async () => {
-        console.warn(`== Initializing`);
+        console.warn(`== Setup`);
 
-        await fs.remove(this.#outputPath);
-        await fs.ensureDir(this.#outputPath);
+        // Cleanup
+        await this.#cleanOutput();
 
         // GENERATE WIKI
         console.warn(`== Generating wiki`);
 
-        const summaryMap = await this.generateWiki();
-        if (!summaryMap || summaryMap.length <= 0) throw new Error(`Failed to generate wiki? Summary can't be generated`);
+        const summaryMap = await this.#generateWiki();
+        if (!summaryMap || summaryMap.length <= 0) throw new Error(`[WikiExtract] Failed to generate wiki? Summary can't be generated`);
 
+        // GENERATE SUMMARY.md
         console.warn(`== Generating summary`);
-        await this.generateSummary(summaryMap);
+        const summary = await SummaryGenerator.generate(this.#outputPath, summaryMap, this.#options.templates.summary);
 
+        fs.writeFileSync(`./SUMMARY.md`, summary, { encoding: 'utf-8' });
+        console.warn(`Wrote summary file`);
+
+        // Done, no pre-cleanup steps
         console.warn(`== Success!`);
     };
 
-    generateSummary = async (summaryMap) => {
-        const dirs = await fs
-            .readdirSync(`${this.#outputPath}`, { withFileTypes: true })
-            .filter((dirent) => dirent.isDirectory())
-            .map((dirent) => dirent.name);
-
-        let data = '';
-        dirs.forEach((dir) => {
-            data += `  * [${dir}](${this.#outputPath}/${dir}/README.md)\n`;
-
-            const mdFiles = glob.sync(`${this.#outputPath}/${dir}/*.md`, { symlinks: true });
-            mdFiles.forEach((file) => {
-                const name = summaryMap[file].title.msg;
-                const fileName = basename(file);
-                if (fileName === 'README.md') return;
-
-                data += `    * [${name}](${this.#outputPath}/${dir}/${fileName})\n`;
-            });
-        });
-
-        fs.writeFileSync(`./SUMMARY.md`, this.#templates.summary.replace('$FILES$', data), { encoding: 'utf-8' });
-        console.warn(`Wrote summary file`);
+    /**
+     * Removes output folder and re-creates it
+     * @returns {Promise<void>}
+     */
+    #cleanOutput = async () => {
+        const cleanOutput = this.#options.clean || true;
+        if (cleanOutput) await fs.remove(this.#outputPath);
+        await fs.ensureDir(this.#outputPath);
     };
 
-    generateWiki = async () => {
+    /**
+     * Generates the wiki files
+     *
+     * @returns {Promise<void>}
+     */
+    #generateWiki = async () => {
         const summaryMap = {};
 
-        const luaFiles = glob.sync(`${this.#libPath}`, { symlinks: true });
+        const luaFiles = await glob([`${this.#libPath}`], { followSymbolicLinks: true, dot: true });
         if (!luaFiles) throw new Error('No lua files found');
 
         // Parse files
@@ -95,27 +117,20 @@ class IASWikiExtract {
 
             // Generate files
             data.blocks.forEach((codeBlock) => {
-                const isClass = codeBlock.type === 'CLASS';
-                const isMethod = codeBlock.type === 'METHOD';
-                const isExtension = codeBlock.type === 'EXTENSION';
+                const blockType = codeBlock.type.toLowerCase();
 
-                let mdData = '';
-                if (isMethod) {
-                    mdData = new MDMethod(this.#outputPath, this.#templates.method).generate(codeBlock);
-                } else if (isExtension) {
-                    mdData = new MDExtension(this.#outputPath, this.#templates.extension).generate(codeBlock);
-                } else if (isClass) {
-                    mdData = new MDClass(this.#outputPath, this.#templates.class).generate(codeBlock);
-                }
+                const template = this.#options.templates[blockType];
+                if (!template) throw new Error(`[WikiExtract] Missing template for '${blockType}'`);
 
-                if (mdData.trim() === '') return;
+                let mdData = MDGenerator.generate(this.#outputPath, this.#options.templates[codeBlock.type.toLowerCase()], codeBlock);
+                if (mdData.trim() === '') return console.warn(`Failed to generate md for type '${blockType}'`);
 
                 let fileName = codeBlock.title.msg.split(':');
                 if (!fileName || fileName.length <= 1) fileName = codeBlock.title.msg;
                 else fileName = fileName[1];
 
                 let output = `${this.#outputPath}/${folderTitle}/${folderTitle}_${fileName}.md`;
-                if (isClass && hasSingleClass) output = `${this.#outputPath}/${folderTitle}/README.md`;
+                if (blockType === 'class' && hasSingleClass) output = `${this.#outputPath}/${folderTitle}/README.md`;
 
                 summaryMap[output] = {
                     title: codeBlock.title,
@@ -123,12 +138,10 @@ class IASWikiExtract {
                 };
 
                 fs.writeFileSync(output, mdData, { encoding: 'utf-8' });
-                console.warn(`Wrote wiki file: ${output}`);
+                console.warn(`Wrote wiki file: '${output}' | Using template type '${blockType}'`);
             });
         });
 
         return summaryMap;
     };
-}
-
-module.exports = IASWikiExtract;
+};

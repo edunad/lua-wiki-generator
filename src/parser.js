@@ -5,17 +5,29 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const events = require('events');
 
-class LuaParser {
+/**
+ * Lua comment parser
+ * @class
+ */
+module.exports = class LuaParser {
     #currentCommentBlock;
     #currentMode;
     #parsedBlocks;
     #filePath;
     #foundBlock;
 
+    /**
+     * @constructor
+     * @param {string} filePath - the input lua file
+     */
     constructor(path) {
         this.#filePath = path;
     }
 
+    /**
+     * Parse the lua file
+     * @returns {Promise<void>}
+     */
     parseLua = async () => {
         const stream = fs.createReadStream(this.#filePath, 'utf8');
         const rl = readline.createInterface({
@@ -35,6 +47,10 @@ class LuaParser {
         return Promise.resolve(this.#parsedBlocks);
     };
 
+    /**
+     * Resets the parsed blocks
+     * @returns {void}
+     */
     #reset = () => {
         this.#currentCommentBlock = this.#getDefaultBlock();
         this.#currentMode = 'NONE';
@@ -44,36 +60,79 @@ class LuaParser {
         };
     };
 
-    #isIgnoredAttr = (attr) => {
-        return ['---@meta', '---@class'].indexOf(attr) !== -1; // TODO: Add other weird attributes that we don't care
-    };
-
+    /**
+     * Returns true if the line is a lua extension, aka math.something = function(
+     * @param {string} line - the reading line
+     * @returns {boolean}
+     */
     #isExtensionMethod = (line) => {
-        return line.indexOf('function(') !== -1;
+        return line.replace(/ /g, '').indexOf('=function(') !== -1;
     };
 
+    /**
+     * Returns true if the line is a lua class
+     * @param {string} line - the attribute line
+     * @returns {boolean}
+     */
     #isClass = (line) => {
         return line.indexOf('={') !== -1;
     };
 
+    /**
+     * Returns true if the line is a lua method
+     * @param {string} line - the reading line
+     * @returns {boolean}
+     */
     #isMethod = (line) => {
         return line.startsWith('function ');
     };
-    // ------
 
+    /**
+     * Returns true if the given type is a primitive
+     * @param {string} type - the type to check
+     * @returns {boolean}
+     */
+    #isLuaPrimitive = (type) => {
+        const primitives = ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table', 'any', 'void'];
+
+        const fixedStr = type.toLowerCase().trim();
+        const name = fixedStr.split('[');
+
+        return primitives.includes(name[0] || fixedStr);
+    };
+
+    /**
+     * Extracts the method using regex
+     * @param {string} line - the reading line
+     * @returns {RegExpMathArray}
+     */
     #extractMethod = (line) => {
         return [...line.matchAll(/function ((.*):.*)\((.*)\)/g)][0];
     };
 
+    /**
+     * Extracts the extension using regex
+     * @param {string} line - the reading line
+     * @returns {RegExpMathArray}
+     */
     #extractExtension = (line) => {
         return [...line.matchAll(/(.*)=.*function.*(\(.*\))/g)][0];
     };
 
+    /**
+     * Extracts the class using regex
+     * @param {string} line - the reading line
+     * @returns {RegExpMathArray}
+     */
     #extractClass = (line) => {
         return [...line.matchAll(/(.*)=.*{/g)][0];
     };
 
-    // DOC PARSING ----
+    /**
+     * Parse and extract parameters
+     * @param {string} line - the reading line
+     * @returns {object}
+     */
     #parseParam = (line) => {
         //---@param callback function bla
         const paramRegex = [...line.matchAll(/---@param ([^ \r\n]*) ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
@@ -93,6 +152,11 @@ class LuaParser {
         };
     };
 
+    /**
+     * Parse and extract fields
+     * @param {string} line - the reading line
+     * @returns {object}
+     */
     #parseField = (line) => {
         //---@field callback function bla
         const fieldRegex = [...line.matchAll(/---@field ([^ \r\n]*) ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
@@ -109,6 +173,11 @@ class LuaParser {
         };
     };
 
+    /**
+     * Parse and extract return
+     * @param {string} line - the reading line
+     * @returns {object}
+     */
     #parseReturn = (line) => {
         //---@return boolean asdasdas
         const returnRegex = [...line.matchAll(/---@return ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
@@ -125,6 +194,11 @@ class LuaParser {
         };
     };
 
+    /**
+     * Parse and extract hints
+     * @param {string} line - the reading line
+     * @returns {object}
+     */
     #parseHints = (line) => {
         //---@hint @warning PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
         const hintRegex = [...line.matchAll(/---@hint ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
@@ -139,6 +213,11 @@ class LuaParser {
         };
     };
 
+    /**
+     * Parse and extract the enviroment
+     * @param {string} line - the reading line
+     * @returns {string}
+     */
     #parseEnv = (line) => {
         //---@env shared
         const envRegex = [...line.matchAll(/---@env ([^ \r\n]*)/g)];
@@ -151,12 +230,20 @@ class LuaParser {
     };
     /// --------
 
+    /**
+     * Builds the return for the title. (boolean, string, etc..)
+     * @param {object} returns - the return object
+     * @returns {string}
+     */
     #buildReturn = (returns) => {
         if (!returns || returns.length <= 0) return 'void';
         return returns.map((ret) => ret.type).join(', ');
     };
 
-    /// --------
+    /**
+     * The default comment object
+     * @returns {object}
+     */
     #getDefaultBlock = () => {
         return {
             env: 'UNKNOWN',
@@ -170,19 +257,14 @@ class LuaParser {
         };
     };
 
-    #isLuaPrimitive = (type) => {
-        const primitives = ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table'];
-
-        const fixedStr = type.toLowerCase().trim();
-        const name = fixedStr.split('[');
-
-        return primitives.includes(name[0] || fixedStr);
-    };
-
-    // ------------
+    /**
+     * Parses the given line
+     * @param {string} line - the current line to parse
+     * @returns {void}
+     */
     #parseLine = (line) => {
         const trimmedLine = line.replace(/\s/g, '');
-        if (trimmedLine === '' || this.#isIgnoredAttr(trimmedLine)) return; // Ignore
+        if (trimmedLine === '') return; // Ignore
 
         // Reached a method?
         if (!trimmedLine.startsWith('---')) {
@@ -261,6 +343,4 @@ class LuaParser {
             this.#foundBlock = true;
         }
     };
-}
-
-module.exports = LuaParser;
+};

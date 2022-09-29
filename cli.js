@@ -60,10 +60,12 @@ require('yargs')(hideBin(process.argv)) // eslint-disable-line
         const summaryTemplate = await readFile(argv.summary, 'utf8');
 
         await new IASWikiExtract(argv.path, argv.out, {
-            summary: summaryTemplate,
-            method: methodTemplate,
-            class: classTemplate,
-            extension: extensionTemplate,
+            templates: {
+                summary: summaryTemplate,
+                method: methodTemplate,
+                class: classTemplate,
+                extension: extensionTemplate,
+            },
         }).extract();
     })
     .demandCommand(1, '')

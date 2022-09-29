@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MDMethod Successfully generates a class MD file 1`] = `
+"## ![shared](.gitbook/assets/shared.png) ![Base](.gitbook/assets/base.png) AABB
+AABB's entry class
+
+------
+## Fields
+
+| Type   | Name |
+| ------ | ---: |
+| [Vector](./readme/vector.md) | pos |
+| [Vector](./readme/vector.md) | size |
+
+"
+`;
+
+exports[`MDMethod Successfully generates a extension MD file 1`] = `
+"## ![client](.gitbook/assets/client.png) math.isNan
+
+{% hint style="@success" %} OH NOOOOOOO {% endhint %}
+
+
+\`\`\`lua
+boolean math.isNan(val)
+\`\`\`
+
+Returns true if the number is NaN (not a number)
+
+------
+## Parameters
+
+| Type   | Name | Description | Optional |
+| ------ | ---- | ----------- | -------: |
+| number | val | No description |  |
+
+
+------
+## Returns
+
+| Type   | Description |
+| ------ | ----------: |
+| boolean | If its NaN |
+
+"
+`;
+
+exports[`MDMethod Successfully generates a method MD file 1`] = `
+"## ![shared](.gitbook/assets/shared.png) [console](./readme/console.md):execute
+
+{% hint style="@warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
+{% hint style="@danger" %} OH NOOOOOOO {% endhint %}
+
+
+\`\`\`lua
+boolean, string console:execute(args)
+\`\`\`
+
+Executes a console command programmatically
+\`\`\`lua
+--my_command is the command to execute, true is a parameter
+console:execute({"my_command", "true"})
+\`\`\`
+
+
+------
+## Parameters
+
+| Type   | Name | Description | Optional |
+| ------ | ---- | ----------- | -------: |
+| string[] | args | No description |  |
+
+
+------
+## Returns
+
+| Type   | Description |
+| ------ | ----------: |
+| boolean | If command was executed successfully |
+| string | No description |
+
+"
+`;
+
+exports[`MDMethod Successfully handles custom parsers 1`] = `
+"## ![$SCOPE$](.gitbook/assets/$SCOPE$.png) $TITLE_NAME$
+
+METHOD
+"
+`;
+
+exports[`MDMethod Successfully handles custom parsers 2`] = `
+"## ![shared](.gitbook/assets/shared.png) [console](./readme/console.md):execute
+
+METHOD
+"
+`;
+
+exports[`MDMethod Successfully handles missing fields 1`] = `
+"## ![unknown](.gitbook/assets/unknown.png) [console](./readme/console.md):execute
+
+{% hint style="@uhhhh" %} OH NOOOOOOO {% endhint %}
+
+
+\`\`\`lua
+void console:execute(args)
+\`\`\`
+
+Executes a console command programmatically
+
+------
+## Parameters
+
+| Type   | Name | Description | Optional |
+| ------ | ---- | ----------- | -------: |
+| string[]" | "args | No description |  |
+
+"
+`;
+
+exports[`MDMethod Successfully handles unknown fields 1`] = `
+"##![Base](.gitbook/assets/base.png) $TITLES_B$
+
+![$RANDOM$](.gitbook/assets/$RANDOM$.png)
+$UNKNOWN_FIELD$
+"
+`;
