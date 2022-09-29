@@ -1,0 +1,33 @@
+name: PULL REQUEST TESTS
+on:
+    pull_request:
+        types:
+            - opened
+    workflow_dispatch:
+permissions:
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '18.x'
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Get yarn cache directory path
+              id: yarn-cache-dir-path
+              run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+            - uses: actions/cache@v3
+              id: yarn-cache
+              with:
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
+
+            - run: yarn install
+            - run: yarn test

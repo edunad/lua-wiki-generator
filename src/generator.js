@@ -76,8 +76,6 @@ class IASWikiExtract {
     generateWiki = async () => {
         const summaryMap = {};
 
-        const outputFolderName = basename(this.#outputPath);
-
         const luaFiles = glob.sync(`${this.#libPath}`, { symlinks: true });
         if (!luaFiles) throw new Error('No lua files found');
 
@@ -103,11 +101,11 @@ class IASWikiExtract {
 
                 let mdData = '';
                 if (isMethod) {
-                    mdData = new MDMethod(outputFolderName, this.#templates.method).generate(codeBlock);
+                    mdData = new MDMethod(this.#outputPath, this.#templates.method).generate(codeBlock);
                 } else if (isExtension) {
-                    mdData = new MDExtension(outputFolderName, this.#templates.extension).generate(codeBlock);
+                    mdData = new MDExtension(this.#outputPath, this.#templates.extension).generate(codeBlock);
                 } else if (isClass) {
-                    mdData = new MDClass(outputFolderName, this.#templates.class).generate(codeBlock);
+                    mdData = new MDClass(this.#outputPath, this.#templates.class).generate(codeBlock);
                 }
 
                 if (mdData.trim() === '') return;
