@@ -1,12 +1,7 @@
-## ![$SCOPE$](.gitbook/assets/$SCOPE$.png) $METHOD_NAME$
-
+## ![$SCOPE$](.gitbook/assets/$SCOPE$.png) $TITLE_EXTENSION_NAME$
 $HINTS$
-
 ```lua
-$METHOD_NAME$
+$METHOD$
 ```
 
-$DESCRIPTION$
-$EXAMPLE$
-$PARAMETERS$
-$RETURNS$
+$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$

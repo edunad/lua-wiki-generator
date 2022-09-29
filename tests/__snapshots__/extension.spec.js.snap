@@ -1,16 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MDGenerators Generates a Extension MD 1`] = `
+exports[`MDExtension Handles missing fields 1`] = `
+"## ![unknown](.gitbook/assets/unknown.png) math.isNan
+
+\`\`\`lua
+booleanasdasdada math.isNan(val)
+\`\`\`
+
+
+------
+## Returns
+
+| Type   | Description |
+| ------ | ----------: |
+| [booleanasdasdada](./home/booleanasdasdada) | aaaaaaaaaaaaaaaaaaaaa |
+
+"
+`;
+
+exports[`MDExtension Handles unknown fields 1`] = `
+"##![Base](.gitbook/assets/base.png) $TITLES_B$
+
+![$RANDOM$](.gitbook/assets/$RANDOM$.png)
+$UNKNOWN_FIELD$
+"
+`;
+
+exports[`MDExtension Successfully generates a MD file 1`] = `
 "## ![client](.gitbook/assets/client.png) math.isNan
-
-
 
 \`\`\`lua
 boolean math.isNan(val)
 \`\`\`
 
 Returns true if the number is NaN (not a number)
-
 ------
 ## Parameters
 

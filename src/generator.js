@@ -57,12 +57,15 @@ class IASWikiExtract {
 
         let data = '';
         dirs.forEach((dir) => {
-            data += `  * [${dir}](home/${dir}/README.md)\n`;
+            data += `  * [${dir}](${this.#outputPath}/${dir}/README.md)\n`;
 
             const mdFiles = glob.sync(`${this.#outputPath}/${dir}/*.md`, { symlinks: true });
             mdFiles.forEach((file) => {
                 const name = summaryMap[file].title.msg;
-                data += `    * [${name}](home/${dir}/${basename(file)})\n`;
+                const fileName = basename(file);
+                if (fileName === 'README.md') return;
+
+                data += `    * [${name}](${this.#outputPath}/${dir}/${fileName})\n`;
             });
         });
 

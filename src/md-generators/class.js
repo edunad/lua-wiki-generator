@@ -27,7 +27,7 @@ class MDClass {
 
     #parseDescription = (template, data) => {
         if (!data.commentBlock.description) return template;
-        return template.replace('$DESCRIPTION$', data.commentBlock.description);
+        return template.replace('$DESCRIPTION$', `${data.commentBlock.description}\n`);
     };
 
     #parseScope = (template, data) => {
@@ -37,7 +37,7 @@ class MDClass {
 
     #parseTitle = (template, data) => {
         if (!data.title) return template;
-        return template.replace('$BASE_NAME$', data.title.msg);
+        return template.replace('$TITLE_BASE_NAME$', data.title.msg);
     };
 
     #parseHint = (template, data) => {
@@ -47,6 +47,8 @@ class MDClass {
                 if (hint.message.trim() === '') return;
                 hints += `{% hint style="${hint.type}" %} ${hint.message} {% endhint %}\n`;
             });
+
+            hints += `\n`;
         }
 
         return template.replace('$HINTS$', hints);
@@ -64,6 +66,8 @@ class MDClass {
                 const type = field.link ? `[${field.link}](${this.#outputFolder}/${field.link})` : field.type;
                 fields += `| ${type} | ${field.name} |\n`;
             });
+
+            fields += `\n`;
         }
 
         return template.replace('$FIELDS$', fields);

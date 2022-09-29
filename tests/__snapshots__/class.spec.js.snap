@@ -1,9 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MDGenerators Generates a Class MD 1`] = `
+exports[`MDClass Handles missing fields 1`] = `
+"## ![unknown](.gitbook/assets/unknown.png) ![Base](.gitbook/assets/base.png) AABB
+
+"
+`;
+
+exports[`MDClass Handles unknown fields 1`] = `
+"##![Base](.gitbook/assets/base.png) $TITLES_B$
+
+![$RANDOM$](.gitbook/assets/$RANDOM$.png)
+$UNKNOWN_FIELD$
+"
+`;
+
+exports[`MDClass Successfully generates a MD file 1`] = `
 "## ![shared](.gitbook/assets/shared.png) ![Base](.gitbook/assets/base.png) AABB
-
-
 AABB's entry class
 ------
 ## Fields

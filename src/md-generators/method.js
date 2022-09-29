@@ -27,31 +27,42 @@ class MDMethod {
     };
 
     #parseDescription = (template, data) => {
-        return template.replace(/\$DESCRIPTION\$/g, data.commentBlock.description);
+        if (!data.commentBlock.description) return template;
+        return template.replace('$DESCRIPTION$', `${data.commentBlock.description}\n`);
     };
 
     #parseScope = (template, data) => {
+        if (!data.commentBlock.env) return template;
         return template.replace(/\$SCOPE\$/g, data.commentBlock.env.toLowerCase());
     };
 
     #parseTitle = (template, data) => {
+        if (!data.title) return template;
+
         return template.replace(
-            '$METHOD_NAME$',
-            data.title.link ? `[${data.title.link}](${this.#outputFolder}/${data.title.link})` : data.title.msg,
+            '$TITLE_METHOD_NAME$',
+            data.title.link
+                ? `[${data.title.link}](${this.#outputFolder}/${data.title.link})${data.title.msg.replace(data.title.link, '')}`
+                : data.title.msg,
         );
     };
 
     #parseMethodName = (template, data) => {
+        if (!data.method) return template;
         return template.replace('$METHOD_NAME$', data.method);
     };
 
     #parseHint = (template, data) => {
         let hints = '';
         if (data.commentBlock.hints.length > 0) {
+            hints += '\n';
+
             data.commentBlock.hints.forEach((hint) => {
                 if (hint.message.trim() === '') return;
                 hints += `{% hint style="${hint.type}" %} ${hint.message} {% endhint %}\n`;
             });
+
+            hints += '\n';
         }
 
         return template.replace('$HINTS$', hints);
@@ -69,6 +80,8 @@ class MDMethod {
                 const type = param.link ? `[${param.link}](${this.#outputFolder}/${param.link})` : param.type;
                 params += `| ${type} | ${param.name} | ${param.description} | ${param.optional ? '✔' : ''} |\n`;
             });
+
+            params += '\n';
         }
 
         return template.replace('$PARAMETERS$', params);
@@ -86,6 +99,8 @@ class MDMethod {
                 const type = ret.link ? `[${ret.link}](${this.#outputFolder}/${ret.link})` : ret.type;
                 returns += `| ${type} | ${ret.description} |\n`;
             });
+
+            returns += '\n';
         }
 
         return template.replace('$RETURNS$', returns);
@@ -98,7 +113,7 @@ class MDMethod {
             data.commentBlock.examples.forEach((ex) => {
                 example += `${ex}\n`;
             });
-            example += '```\n';
+            example += '```\n\n';
         }
 
         return template.replace('$EXAMPLE$', example);
