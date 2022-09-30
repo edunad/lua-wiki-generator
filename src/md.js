@@ -64,6 +64,7 @@ module.exports = class MDGenerator {
         template = this.#parseReturns(outputPath, template, data);
         template = this.#parseExamples(template, data);
         template = this.#parseFields(outputPath, template, data);
+        template = this.#parseDeprecated(template, data);
 
         return template;
     };
@@ -101,7 +102,19 @@ module.exports = class MDGenerator {
      */
     static #parseTitle = (outputPath, template, data) => {
         if (!data.title) return template;
-        return template.replace('$TITLE_NAME$', data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg);
+
+        const isDeprecated = data.commentBlock.deprecated.length !== 0;
+        if (isDeprecated) {
+            return template.replace(
+                '$TITLE_NAME$',
+                data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', outputPath, data)}~~` : `~~${data.title.msg}~~`,
+            );
+        } else {
+            return template.replace(
+                '$TITLE_NAME$',
+                data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg,
+            );
+        }
     };
 
     /**
@@ -144,6 +157,27 @@ module.exports = class MDGenerator {
     };
 
     /**
+     * Parses deprecated
+     * @param {string} template - md template
+     * @param {object} data - comment block data
+     *
+     * @returns {string}
+     */
+    static #parseDeprecated = (template, data) => {
+        let depr = '';
+        if (data.commentBlock.deprecated.length > 0) {
+            depr += '\n';
+
+            data.commentBlock.deprecated.forEach((msg) => {
+                if (msg.trim() === '') return;
+                depr += `> ⚠ Deprecated: ${msg}\n`;
+            });
+        }
+
+        return template.replace('$DEPRECATED$', depr);
+    };
+
+    /**
      * Parses the parameters
      * @param {string} template - md template
      * @param {object} data - comment block data
@@ -153,7 +187,7 @@ module.exports = class MDGenerator {
     static #parseParameters = (outputPath, template, data) => {
         let params = '';
         if (data.commentBlock.params.length > 0) {
-            params += `\n------\n`;
+            params += `\n-----------------\n`;
             params += `## Parameters\n\n`;
             params += `| Type   | Name | Description | Optional |\n`;
             params += `| ------ | ---- | ----------- | -------: |\n`;
@@ -162,8 +196,6 @@ module.exports = class MDGenerator {
                 const type = param.link ? this.#linkMDParser('$PARAMETERS$', outputPath, param) : param.type;
                 params += `| ${type} | ${param.name} | ${param.description} | ${param.optional ? '✔' : ''} |\n`;
             });
-
-            params += '\n';
         }
 
         return template.replace('$PARAMETERS$', params);
@@ -179,7 +211,7 @@ module.exports = class MDGenerator {
     static #parseReturns = (outputPath, template, data) => {
         let returns = '';
         if (data.commentBlock.returns.length > 0) {
-            returns += `\n------\n`;
+            returns += `\n-----------------\n`;
             returns += `## Returns\n\n`;
             returns += `| Type   | Description |\n`;
             returns += `| ------ | ----------: |\n`;
@@ -188,8 +220,6 @@ module.exports = class MDGenerator {
                 const type = ret.link ? this.#linkMDParser('$RETURNS$', outputPath, ret) : ret.type;
                 returns += `| ${type} | ${ret.description} |\n`;
             });
-
-            returns += '\n';
         }
 
         return template.replace('$RETURNS$', returns);
@@ -205,17 +235,15 @@ module.exports = class MDGenerator {
     static #parseFields = (outputPath, template, data) => {
         let fields = '';
         if (data.commentBlock.fields.length > 0) {
-            fields += `\n------\n`;
+            fields += `\n-----------------\n`;
             fields += `## Fields\n\n`;
-            fields += `| Type   | Name |\n`;
-            fields += `| ------ | ---: |\n`;
+            fields += `| Type   | Name | Optional |\n`;
+            fields += `| ------ | ---- | -------: |\n`;
 
             data.commentBlock.fields.forEach((field) => {
                 const type = field.link ? this.#linkMDParser('$FIELDS$', outputPath, field) : field.type;
-                fields += `| ${type} | ${field.name} |\n`;
+                fields += `| ${type} | ${field.name} | ${field.optional ? '✔' : ''} |\n`;
             });
-
-            fields += `\n`;
         }
 
         return template.replace('$FIELDS$', fields);

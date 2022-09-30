@@ -48,6 +48,9 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(0);
 
+        expect(data.blocks[0].commentBlock.deprecated).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.deprecated.length).toBe(0);
+
         expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.returns.length).toBe(0);
 
@@ -89,6 +92,9 @@ describe('LUAParser', () => {
 
         expect(data.blocks[0].commentBlock.fields).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.fields.length).toBe(0);
+
+        expect(data.blocks[0].commentBlock.deprecated).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.deprecated.length).toBe(0);
 
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(2);
@@ -143,6 +149,10 @@ describe('LUAParser', () => {
 
         expect(data.blocks[0].commentBlock.examples).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.examples.length).toBe(0);
+
+        expect(data.blocks[0].commentBlock.deprecated).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.deprecated.length).toBe(1);
+        expect(data.blocks[0].commentBlock.deprecated[0]).toBe('Do not use this anymore');
 
         expect(data.blocks[0].commentBlock.fields).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.fields.length).toBe(0);

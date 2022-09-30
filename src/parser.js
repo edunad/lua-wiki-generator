@@ -75,7 +75,7 @@ module.exports = class LuaParser {
      * @returns {boolean}
      */
     #isClass = (line) => {
-        return line.indexOf('={') !== -1;
+        return line.replace(/ /g, '').indexOf('={') !== -1;
     };
 
     /**
@@ -165,9 +165,12 @@ module.exports = class LuaParser {
         const fields = fieldRegex[0];
         if (!fields || fields.length < 2) return null;
 
+        const isOptional = fields[2].indexOf('?') !== -1;
+
         return {
             name: fields[1],
             type: fields[2],
+            optional: isOptional,
 
             link: this.#isLuaPrimitive(fields[2]) ? null : fields[2],
         };
@@ -254,6 +257,7 @@ module.exports = class LuaParser {
             fields: [],
             description: [],
             examples: [],
+            deprecated: [],
         };
     };
 
@@ -330,6 +334,8 @@ module.exports = class LuaParser {
             } else if (line.startsWith('---@hint')) {
                 const ret = this.#parseHints(line);
                 if (ret) this.#currentCommentBlock.hints.push(ret);
+            } else if (line.startsWith('---@deprecated')) {
+                this.#currentCommentBlock.deprecated.push(line.replace('---@deprecated', '').trim());
             } else if (line.startsWith('---*')) {
                 this.#currentCommentBlock.description.push(line.replace('---*', '').trim());
             } else if (line.startsWith('---```lua')) {

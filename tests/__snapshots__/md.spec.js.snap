@@ -4,19 +4,20 @@ exports[`MDMethod Successfully generates a class MD file 1`] = `
 "## ![shared](.gitbook/assets/shared.png) ![Base](.gitbook/assets/base.png) AABB
 AABB's entry class
 
-------
+-----------------
 ## Fields
 
-| Type   | Name |
-| ------ | ---: |
-| [Vector](./readme/vector.md) | pos |
-| [Vector](./readme/vector.md) | size |
-
+| Type   | Name | Optional |
+| ------ | ---- | -------: |
+| [Vector](./readme/vector.md) | pos |  |
+| [Vector](./readme/vector.md) | size |  |
 "
 `;
 
 exports[`MDMethod Successfully generates a extension MD file 1`] = `
-"## ![client](.gitbook/assets/client.png) math.isNan
+"## ![client](.gitbook/assets/client.png) ~~math.isNan~~
+
+> ⚠ Deprecated: Do not use this anymore
 
 {% hint style="@success" %} OH NOOOOOOO {% endhint %}
 
@@ -27,21 +28,19 @@ boolean math.isNan(val)
 
 Returns true if the number is NaN (not a number)
 
-------
+-----------------
 ## Parameters
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
 | number | val | No description |  |
 
-
-------
+-----------------
 ## Returns
 
 | Type   | Description |
 | ------ | ----------: |
 | boolean | If its NaN |
-
 "
 `;
 
@@ -63,22 +62,20 @@ console:execute({"my_command", "true"})
 \`\`\`
 
 
-------
+-----------------
 ## Parameters
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
 | string[] | args | No description |  |
 
-
-------
+-----------------
 ## Returns
 
 | Type   | Description |
 | ------ | ----------: |
 | boolean | If command was executed successfully |
 | string | No description |
-
 "
 `;
 
@@ -108,13 +105,12 @@ void console:execute(args)
 
 Executes a console command programmatically
 
-------
+-----------------
 ## Parameters
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
 | string[]" | "args | No description |  |
-
 "
 `;
 
