@@ -203,8 +203,8 @@ module.exports = class LuaParser {
      * @returns {object}
      */
     #parseHints = (line) => {
-        //---@hint @warning PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
-        const hintRegex = [...line.matchAll(/---@hint ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
+        //---@hint @warning "PAGE / FUNCTIONALITY STILL IN CONSTRUCTION"
+        const hintRegex = [...line.matchAll(/---@hint @([^ \r\n]*) "?([^"\r\n]*)?"/g)];
         if (!hintRegex || hintRegex.length !== 1) return null;
 
         const hints = hintRegex[0];

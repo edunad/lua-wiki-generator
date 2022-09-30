@@ -5,8 +5,8 @@
 ---@param args string[]
 ---@return boolean "If command was executed successfully"
 ---@return string
----@hint @warning PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
----@hint @danger OH NOOOOOOO
+---@hint @warning "PAGE / FUNCTIONALITY STILL IN CONSTRUCTION"
+---@hint @danger "OH NOOOOOOO"
 ---* Executes a console command programmatically
 ---
 ---```lua

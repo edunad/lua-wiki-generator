@@ -19,7 +19,7 @@ exports[`MDMethod Successfully generates a extension MD file 1`] = `
 
 > ⚠ Deprecated: Do not use this anymore
 
-{% hint style="@success" %} OH NOOOOOOO {% endhint %}
+{% hint style="success" %} OH NOOOOOOO {% endhint %}
 
 
 \`\`\`lua
@@ -47,8 +47,8 @@ Returns true if the number is NaN (not a number)
 exports[`MDMethod Successfully generates a method MD file 1`] = `
 "## ![shared](.gitbook/assets/shared.png) [console](./readme/console.md):execute
 
-{% hint style="@warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
-{% hint style="@danger" %} OH NOOOOOOO {% endhint %}
+{% hint style="warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
+{% hint style="danger" %} OH NOOOOOOO {% endhint %}
 
 
 \`\`\`lua
@@ -96,7 +96,7 @@ METHOD
 exports[`MDMethod Successfully handles missing fields 1`] = `
 "## ![unknown](.gitbook/assets/unknown.png) [console](./readme/console.md):execute
 
-{% hint style="@uhhhh" %} OH NOOOOOOO {% endhint %}
+{% hint style="uhhhh" %} OH NOOOOOOO {% endhint %}
 
 
 \`\`\`lua

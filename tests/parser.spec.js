@@ -99,9 +99,9 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(2);
         expect(data.blocks[0].commentBlock.hints[0].message).toBe('PAGE / FUNCTIONALITY STILL IN CONSTRUCTION');
-        expect(data.blocks[0].commentBlock.hints[0].type).toBe('@warning');
+        expect(data.blocks[0].commentBlock.hints[0].type).toBe('warning');
         expect(data.blocks[0].commentBlock.hints[1].message).toBe('OH NOOOOOOO');
-        expect(data.blocks[0].commentBlock.hints[1].type).toBe('@danger');
+        expect(data.blocks[0].commentBlock.hints[1].type).toBe('danger');
 
         expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.returns.length).toBe(2);
@@ -160,7 +160,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(1);
         expect(data.blocks[0].commentBlock.hints[0].message).toBe('OH NOOOOOOO');
-        expect(data.blocks[0].commentBlock.hints[0].type).toBe('@success');
+        expect(data.blocks[0].commentBlock.hints[0].type).toBe('success');
 
         expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.returns.length).toBe(1);
