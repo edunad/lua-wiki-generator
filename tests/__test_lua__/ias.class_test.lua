@@ -8,6 +8,7 @@
 ---@class AABB
 ---@field pos Vector
 ---@field size Vector
+---@field meep
 AABB = {
 	pos = {
 		x = 0,

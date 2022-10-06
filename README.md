@@ -6,6 +6,28 @@
 
 Generates a **MARKDOWN** wiki using [sumneko's lua extension](https://github.com/sumneko/lua-language-server/wiki/Annotations) documentation format.
 
+Look at https://github.com/MythicalRawr/ias_wiki and https://iaswiki.rawr.dev/ as an example
+
+## SUPPORTS
+
+```
+---@hint
+---@env
+---@param
+---@field
+---@return
+---@deprecated
+---* <Comment>
+```
+
+Lua Examples :
+
+````
+---```lua
+---<mycode>
+---```
+````
+
 ## INSTALLATION
 
 yarn
@@ -102,7 +124,7 @@ init();
 
 ## USING THE CLI
 
-> Either install it globally, or use `npx` to call the cli
+Either install it globally, or use `npx` to call the cli
 
 Example:
 

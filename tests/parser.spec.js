@@ -36,7 +36,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.examples.length).toBe(0);
 
         expect(data.blocks[0].commentBlock.fields).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.fields.length).toBe(2);
+        expect(data.blocks[0].commentBlock.fields.length).toBe(3);
         expect(data.blocks[0].commentBlock.fields[0].name).toBe('pos');
         expect(data.blocks[0].commentBlock.fields[0].type).toBe('Vector');
         expect(data.blocks[0].commentBlock.fields[0].link).toBe('Vector');
@@ -44,6 +44,10 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.fields[1].name).toBe('size');
         expect(data.blocks[0].commentBlock.fields[1].type).toBe('Vector');
         expect(data.blocks[0].commentBlock.fields[1].link).toBe('Vector');
+
+        expect(data.blocks[0].commentBlock.fields[2].name).toBe('meep');
+        expect(data.blocks[0].commentBlock.fields[2].type).toBe('');
+        expect(data.blocks[0].commentBlock.fields[2].link).toBe(null);
 
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(0);
@@ -142,8 +146,9 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock).not.toBe(undefined);
 
         expect(data.blocks[0].commentBlock.description).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.description.length).toBe(1);
+        expect(data.blocks[0].commentBlock.description.length).toBe(2);
         expect(data.blocks[0].commentBlock.description[0]).toBe('Returns true if the number is NaN (not a number)');
+        expect(data.blocks[0].commentBlock.description[1]).toBe('It also does some other magic');
 
         expect(data.blocks[0].commentBlock.env).toBe('CLIENT');
 

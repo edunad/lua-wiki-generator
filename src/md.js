@@ -78,7 +78,13 @@ module.exports = class MDGenerator {
      */
     static #parseDescription = (template, data) => {
         if (!data.commentBlock.description) return template;
-        return template.replace('$DESCRIPTION$', `${data.commentBlock.description}\n`);
+
+        let description = '';
+        data.commentBlock.description.forEach((desc) => {
+            description += `${desc}<br>`;
+        });
+
+        return template.replace('$DESCRIPTION$', `${description}\n`);
     };
 
     /**

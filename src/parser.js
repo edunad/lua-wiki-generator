@@ -159,20 +159,21 @@ module.exports = class LuaParser {
      */
     #parseField = (line) => {
         //---@field callback function bla
-        const fieldRegex = [...line.matchAll(/---@field ([^ \r\n]*) ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
+        const fieldRegex = [...line.matchAll(/---@field ([^ \r\n]*)? ?([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
         if (!fieldRegex || fieldRegex.length !== 1) return null;
 
         const fields = fieldRegex[0];
-        if (!fields || fields.length < 2) return null;
+        if (!fields || fields.length < 1) return null;
 
-        const isOptional = fields[2].indexOf('?') !== -1;
+        const typeField = fields[2] || '';
+        const isOptional = typeField.indexOf('?') !== -1;
 
         return {
             name: fields[1],
-            type: fields[2],
+            type: typeField,
             optional: isOptional,
 
-            link: this.#isLuaPrimitive(fields[2]) ? null : fields[2],
+            link: typeField === '' ? null : this.#isLuaPrimitive(typeField) ? null : typeField,
         };
     };
 
@@ -214,6 +215,22 @@ module.exports = class LuaParser {
             type: hints[1],
             message: hints[2],
         };
+    };
+
+    /**
+     * Parse and extract deprecated
+     * @param {string} line - the reading line
+     * @returns {object}
+     */
+    #parseDeprecated = (line) => {
+        //---@deprecated "PAGE / FUNCTIONALITY STILL IN CONSTRUCTION"
+        const deprecatedRegex = [...line.matchAll(/---@deprecated "?([^"\r\n]*)?"/g)];
+        if (!deprecatedRegex || deprecatedRegex.length !== 1) return null;
+
+        const deprecated = deprecatedRegex[0];
+        if (!deprecated) return null;
+
+        return deprecated[1];
     };
 
     /**
@@ -335,7 +352,8 @@ module.exports = class LuaParser {
                 const ret = this.#parseHints(line);
                 if (ret) this.#currentCommentBlock.hints.push(ret);
             } else if (line.startsWith('---@deprecated')) {
-                this.#currentCommentBlock.deprecated.push(line.replace('---@deprecated', '').trim());
+                const ret = this.#parseDeprecated(line);
+                if (ret) this.#currentCommentBlock.deprecated.push(ret);
             } else if (line.startsWith('---*')) {
                 this.#currentCommentBlock.description.push(line.replace('---*', '').trim());
             } else if (line.startsWith('---```lua')) {
