@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MDMethod Successfully generates a class MD file 1`] = `
-"## ![shared](.gitbook/assets/shared.png) ![Base](.gitbook/assets/base.png) AABB
+"# AABB
+
+### <img src="../../.gitbook/assets/base.png" width="32" height="32" /> AABB
 AABB's entry class<br>
 
 -----------------
@@ -16,7 +18,9 @@ AABB's entry class<br>
 `;
 
 exports[`MDMethod Successfully generates a extension MD file 1`] = `
-"## ![client](.gitbook/assets/client.png) ~~math.isNan~~
+"# ~~math.isNan~~
+
+### <img src="../../.gitbook/assets/client.png" width="32" height="32" /> ~~math.isNan~~
 
 > ⚠ Deprecated: Do not use this anymore
 
@@ -46,7 +50,9 @@ Returns true if the number is NaN (not a number)<br>It also does some other magi
 `;
 
 exports[`MDMethod Successfully generates a method MD file 1`] = `
-"## ![shared](.gitbook/assets/shared.png) [console](./readme/console.md):execute
+"# [console](./readme/console.md):execute
+
+### <img src="../../.gitbook/assets/shared.png" width="32" height="32" /> [console](./readme/console.md):execute
 
 {% hint style="warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
 {% hint style="danger" %} OH NOOOOOOO {% endhint %}
@@ -95,7 +101,9 @@ METHOD
 `;
 
 exports[`MDMethod Successfully handles missing fields 1`] = `
-"## ![unknown](.gitbook/assets/unknown.png) [console](./readme/console.md):execute
+"# [console](./readme/console.md):execute
+
+### <img src="../../.gitbook/assets/unknown.png" width="32" height="32" /> [console](./readme/console.md):execute
 
 {% hint style="uhhhh" %} OH NOOOOOOO {% endhint %}
 

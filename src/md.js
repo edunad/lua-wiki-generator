@@ -112,12 +112,12 @@ module.exports = class MDGenerator {
         const isDeprecated = data.commentBlock.deprecated.length !== 0;
         if (isDeprecated) {
             return template.replace(
-                '$TITLE_NAME$',
+                /\$TITLE_NAME\$/g,
                 data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', outputPath, data)}~~` : `~~${data.title.msg}~~`,
             );
         } else {
             return template.replace(
-                '$TITLE_NAME$',
+                /\$TITLE_NAME\$/g,
                 data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg,
             );
         }
@@ -136,7 +136,7 @@ module.exports = class MDGenerator {
         method += `${data.method}\n`;
         method += '```\n\n';
 
-        return template.replace('$METHOD$', method);
+        return template.replace(/\$METHOD\$/g, method);
     };
 
     /**
@@ -159,7 +159,7 @@ module.exports = class MDGenerator {
             hints += '\n';
         }
 
-        return template.replace('$HINTS$', hints);
+        return template.replace(/\$HINTS\$/g, hints);
     };
 
     /**
@@ -180,7 +180,7 @@ module.exports = class MDGenerator {
             });
         }
 
-        return template.replace('$DEPRECATED$', depr);
+        return template.replace(/\$DEPRECATED\$/g, depr);
     };
 
     /**
@@ -204,7 +204,7 @@ module.exports = class MDGenerator {
             });
         }
 
-        return template.replace('$PARAMETERS$', params);
+        return template.replace(/\$PARAMETERS\$/g, params);
     };
 
     /**
@@ -228,7 +228,7 @@ module.exports = class MDGenerator {
             });
         }
 
-        return template.replace('$RETURNS$', returns);
+        return template.replace(/\$RETURNS\$/g, returns);
     };
 
     /**
@@ -252,7 +252,7 @@ module.exports = class MDGenerator {
             });
         }
 
-        return template.replace('$FIELDS$', fields);
+        return template.replace(/\$FIELDS\$/g, fields);
     };
 
     /**
@@ -272,7 +272,7 @@ module.exports = class MDGenerator {
             example += '```\n\n';
         }
 
-        return template.replace('$EXAMPLE$', example);
+        return template.replace(/\$EXAMPLE\$/g, example);
     };
 
     /**

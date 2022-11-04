@@ -1,2 +1,4 @@
-## ![$SCOPE$](.gitbook/assets/$SCOPE$.png) ![Base](.gitbook/assets/base.png) $TITLE_NAME$
+# $TITLE_NAME$
+
+### <img src="../../.gitbook/assets/base.png" width="32" height="32" /> $TITLE_NAME$
 $DEPRECATED$$HINTS$$DESCRIPTION$$FIELDS$
