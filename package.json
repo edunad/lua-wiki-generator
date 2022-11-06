@@ -1,11 +1,17 @@
 {
     "name": "@edunad/lua-wiki-generator",
     "packageManager": "yarn@3.2.3",
-    "version": "0.0.12",
+    "version": "1.0.0",
     "author": "FailCake (edunad)",
     "repository": {
         "url": "https://github.com/edunad/lua-wiki-generator"
     },
+    "keywords": [
+        "lua",
+        "wiki",
+        "markdown",
+        "generator"
+    ],
     "license": "MIT",
     "main": "./index.js",
     "bin": "./cli.js",
