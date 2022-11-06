@@ -77,14 +77,17 @@ module.exports = class MDGenerator {
      * @returns {string}
      */
     static #parseDescription = (template, data) => {
-        if (!data.commentBlock.description) return template;
-
         let description = '';
-        data.commentBlock.description.forEach((desc) => {
-            description += `${desc}<br>`;
-        });
 
-        return template.replace('$DESCRIPTION$', `${description}\n`);
+        if (data.commentBlock.description) {
+            data.commentBlock.description.forEach((desc) => {
+                description += `${desc}<br>`;
+            });
+
+            description += `\n`;
+        }
+
+        return template.replace(/\$DESCRIPTION\$/g, description);
     };
 
     /**
@@ -95,8 +98,10 @@ module.exports = class MDGenerator {
      * @returns {string}
      */
     static #parseScope = (template, data) => {
-        if (!data.commentBlock.env) return template;
-        return template.replace(/\$SCOPE\$/g, data.commentBlock.env.toLowerCase());
+        let env = '';
+        if (data.commentBlock.env) env = data.commentBlock.env.toLowerCase();
+
+        return template.replace(/\$SCOPE\$/g, env);
     };
 
     /**
@@ -107,20 +112,19 @@ module.exports = class MDGenerator {
      * @returns {string}
      */
     static #parseTitle = (outputPath, template, data) => {
-        if (!data.title) return template;
+        let title = '';
 
-        const isDeprecated = data.commentBlock.deprecated.length !== 0;
-        if (isDeprecated) {
-            return template.replace(
-                /\$TITLE_NAME\$/g,
-                data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', outputPath, data)}~~` : `~~${data.title.msg}~~`,
-            );
-        } else {
-            return template.replace(
-                /\$TITLE_NAME\$/g,
-                data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg,
-            );
+        if (data.title) {
+            const isDeprecated = data.commentBlock.deprecated.length !== 0;
+
+            if (isDeprecated) {
+                title = data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', outputPath, data)}~~` : `~~${data.title.msg}~~`;
+            } else {
+                title = data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg;
+            }
         }
+
+        return template.replace(/\$TITLE_NAME\$/g, title);
     };
 
     /**
@@ -131,10 +135,13 @@ module.exports = class MDGenerator {
      * @returns {string}
      */
     static #parseMethodName = (template, data) => {
-        if (!data.method) return template;
-        let method = '\n```lua\n';
-        method += `${data.method}\n`;
-        method += '```\n\n';
+        let method = '';
+
+        if (data.method) {
+            method = '\n```lua\n';
+            method += `${data.method}\n`;
+            method += '```\n\n';
+        }
 
         return template.replace(/\$METHOD\$/g, method);
     };
@@ -200,7 +207,7 @@ module.exports = class MDGenerator {
 
             data.commentBlock.params.forEach((param) => {
                 const type = param.link ? this.#linkMDParser('$PARAMETERS$', outputPath, param) : param.type;
-                params += `| ${type} | ${param.name} | ${param.description} | ${param.optional ? '✔' : ''} |\n`;
+                params += `| ${type} | ${param.name} | ${param.description} | ${param.optional ? '✔' : ' '} |\n`;
             });
         }
 
@@ -248,7 +255,7 @@ module.exports = class MDGenerator {
 
             data.commentBlock.fields.forEach((field) => {
                 const type = field.link ? this.#linkMDParser('$FIELDS$', outputPath, field) : field.type;
-                fields += `| ${type} | ${field.name} | ${field.optional ? '✔' : ''} |\n`;
+                fields += `| ${type} | ${field.name} | ${field.optional ? '✔' : ' '} |\n`;
             });
         }
 

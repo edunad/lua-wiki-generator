@@ -28,36 +28,44 @@ require('yargs')(hideBin(process.argv)) // eslint-disable-line
     .option('method', {
         alias: 'm',
         describe: 'Method template path',
-        demandOption: true,
+        demandOption: false,
     })
     .option('class', {
         alias: 'c',
         describe: 'Class template path',
-        demandOption: true,
+        demandOption: false,
     })
     .option('extension', {
         alias: 'e',
         describe: 'Extension template path',
-        demandOption: true,
+        demandOption: false,
+    })
+    .option('gvar', {
+        alias: 'gv',
+        describe: 'Global consts (G_) template path',
+        demandOption: false,
     })
     .option('summary', {
         alias: 's',
         describe: 'Summary template path',
-        demandOption: true,
+        demandOption: false,
     })
     .command('generate', '- Generate the wiki', {}, async (argv) => {
         if (!argv.path) throw new Error('Missing lib path');
         if (!argv.out) throw new Error('Missing output path');
 
-        if (!argv.method) throw new Error('Missing method template path');
-        if (!argv.class) throw new Error('Missing class template path');
-        if (!argv.extension) throw new Error('Missing extension template path');
-        if (!argv.summary) throw new Error('Missing summary template path');
+        let summaryTemplate = undefined;
+        let methodTemplate = undefined;
+        let classTemplate = undefined;
+        let extensionTemplate = undefined;
+        let gvarTemplate = undefined;
 
-        const methodTemplate = await readFile(argv.method, 'utf8');
-        const classTemplate = await readFile(argv.class, 'utf8');
-        const extensionTemplate = await readFile(argv.extension, 'utf8');
-        const summaryTemplate = await readFile(argv.summary, 'utf8');
+        if (argv.summary) summaryTemplate = await readFile(argv.summary, 'utf8');
+
+        if (argv.method) methodTemplate = await readFile(argv.method, 'utf8');
+        if (argv.class) classTemplate = await readFile(argv.class, 'utf8');
+        if (argv.extension) extensionTemplate = await readFile(argv.extension, 'utf8');
+        if (argv.gvar) gvarTemplate = await readFile(argv.gvar, 'utf8');
 
         await new IASWikiExtract(argv.path, argv.out, {
             templates: {
@@ -65,6 +73,7 @@ require('yargs')(hideBin(process.argv)) // eslint-disable-line
                 method: methodTemplate,
                 class: classTemplate,
                 extension: extensionTemplate,
+                gvar: gvarTemplate,
             },
         }).extract();
     })

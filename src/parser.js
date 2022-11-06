@@ -79,6 +79,15 @@ module.exports = class LuaParser {
     };
 
     /**
+     * Returns true if the line is a lua global const (_G)
+     * @param {string} line - the attribute line
+     * @returns {boolean}
+     */
+    #isGVar = (line) => {
+        return line.startsWith('_G.');
+    };
+
+    /**
      * Returns true if the line is a lua method
      * @param {string} line - the reading line
      * @returns {boolean}
@@ -126,6 +135,15 @@ module.exports = class LuaParser {
      */
     #extractClass = (line) => {
         return [...line.matchAll(/(.*)=.*{/g)][0];
+    };
+
+    /**
+     * Extracts the _G. var using regex
+     * @param {string} line - the reading line
+     * @returns {RegExpMathArray}
+     */
+    #extractGVar = (line) => {
+        return [...line.matchAll(/_G.(.*)=.*/g)][0];
     };
 
     /**
@@ -324,6 +342,19 @@ module.exports = class LuaParser {
                             type: 'CLASS',
                             title: {
                                 msg: methodData[1].trim(),
+                                link: null,
+                            },
+                            method: '',
+                            commentBlock: this.#currentCommentBlock,
+                        });
+                    }
+                } else if (this.#isGVar(trimmedLine)) {
+                    const gVarData = this.#extractGVar(line);
+                    if (gVarData && gVarData.length >= 1) {
+                        this.#parsedBlocks.blocks.push({
+                            type: 'GVAR',
+                            title: {
+                                msg: gVarData[1].trim(),
                                 link: null,
                             },
                             method: '',

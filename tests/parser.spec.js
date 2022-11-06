@@ -179,4 +179,45 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.params[0].name).toBe('val');
         expect(data.blocks[0].commentBlock.params[0].link).toBe(null);
     });
+
+    it('Parses gvars', async () => {
+        const file = `./__test_lua__/ias.gvar_test.lua`;
+        const parser = new LuaParser(resolve(__dirname, file));
+
+        expect(parser).not.toBe(undefined);
+
+        const data = await parser.parseLua();
+
+        expect(data).not.toBe(undefined);
+
+        expect(data.blocks).not.toBe(undefined);
+        expect(data.blocks.length).toBe(1);
+
+        expect(data.blocks[0].type).toBe('GVAR');
+        expect(data.blocks[0].title.msg).toBe('SERVER');
+        expect(data.blocks[0].title.link).toBe(null);
+
+        expect(data.blocks[0].method).toBe('');
+        expect(data.blocks[0].commentBlock).not.toBe(undefined);
+
+        expect(data.blocks[0].commentBlock.description).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.description.length).toBe(1);
+        expect(data.blocks[0].commentBlock.description[0]).toBe('Returns true if the current code is running on the SERVER');
+
+        expect(data.blocks[0].commentBlock.env).toBe('SHARED');
+
+        expect(data.blocks[0].commentBlock.examples).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.examples.length).toBe(0);
+
+        expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.hints.length).toBe(1);
+        expect(data.blocks[0].commentBlock.hints[0].message).toBe(`For SHARED code, just don't check for SERVER or CLIENT`);
+        expect(data.blocks[0].commentBlock.hints[0].type).toBe('info');
+
+        expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.returns.length).toBe(1);
+        expect(data.blocks[0].commentBlock.returns[0].description).toBe('No description');
+        expect(data.blocks[0].commentBlock.returns[0].type).toBe('boolean');
+        expect(data.blocks[0].commentBlock.returns[0].link).toBe(null);
+    });
 });

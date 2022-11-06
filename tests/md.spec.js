@@ -10,6 +10,7 @@ const LuaParser = require('../src/parser.js');
 const METHOD_TEMPLATE_FILE = './__test_templates__/METHOD_TEMPLATE.md';
 const EXTENSION_TEMPLATE_FILE = './__test_templates__/EXTENSION_TEMPLATE.md';
 const CLASS_TEMPLATE_FILE = './__test_templates__/CLASS_TEMPLATE.md';
+const GVAR_TEMPLATE_FILE = './__test_templates__/GVAR_TEMPLATE.md';
 const CUSTOM_METHOD_TEMPLATE_FILE = './__test_templates__/CUSTOM_METHOD_TEMPLATE.md';
 const BAD_TEMPLATE_FILE = './__test_templates__/BAD_TEMPLATE.md';
 
@@ -21,6 +22,7 @@ describe('MDMethod', () => {
             method: await fs.readFile(resolve(__dirname, METHOD_TEMPLATE_FILE), 'utf8'),
             extension: await fs.readFile(resolve(__dirname, EXTENSION_TEMPLATE_FILE), 'utf8'),
             class: await fs.readFile(resolve(__dirname, CLASS_TEMPLATE_FILE), 'utf8'),
+            gvar: await fs.readFile(resolve(__dirname, GVAR_TEMPLATE_FILE), 'utf8'),
             custom_method: await fs.readFile(resolve(__dirname, CUSTOM_METHOD_TEMPLATE_FILE), 'utf8'),
 
             invalid: await fs.readFile(resolve(__dirname, BAD_TEMPLATE_FILE), 'utf8'),
@@ -66,6 +68,18 @@ describe('MDMethod', () => {
         expect(data.blocks.length).toBe(1);
 
         expect(MDParser.generate(OUTPUT_FOLDER, this.templates.extension, data.blocks[0])).toMatchSnapshot();
+    });
+
+    it('Successfully generates a gvar MD file', async () => {
+        const parser = new LuaParser(resolve(__dirname, `./__test_lua__/ias.gvar_test.lua`));
+        expect(parser).not.toBe(undefined);
+
+        const data = await parser.parseLua();
+        expect(data).not.toBe(undefined);
+        expect(data.blocks).not.toBe(undefined);
+        expect(data.blocks.length).toBe(1);
+
+        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.gvar, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully handles unknown fields', async () => {

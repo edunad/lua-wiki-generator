@@ -6,11 +6,12 @@
  * @param {string} outputPath - the output folder
  * @param {object} options - options
  * @param {boolean} options.clean - if it should clean the output folder
- * @param {object} options.templates - templates
- * @param {string} options.templates.method
- * @param {string} options.templates.class
- * @param {string} options.templates.extension
- * @param {string} options.templates.summary
+ * @param {object?} options.templates - templates
+ * @param {string?} options.templates.summary
+ * @param {string?} options.templates.method
+ * @param {string?} options.templates.class
+ * @param {string?} options.templates.extension
+ * @param {string?} options.templates.gvar
  * @param {function(parseField: string, outputFolder: string, data: object): string} options.mdLinkParser
  * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]} options.mdTextParser
  */

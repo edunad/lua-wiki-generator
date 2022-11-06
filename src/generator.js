@@ -9,6 +9,11 @@ const LuaParser = require('./parser.js');
 const MDGenerator = require('./md.js');
 const SummaryGenerator = require('./summary.js');
 
+const defaultTemplate = `# $TITLE_NAME$
+
+$DEPRECATED$$HINTS$$METHOD$$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$$FIELDS$
+`;
+
 /**
  * Extract class
  * @class
@@ -24,11 +29,12 @@ module.exports = class WikiExtract {
      * @param {string} outputPath - the output folder
      * @param {object} options - options
      * @param {boolean} options.clean - if it should clean the output folder
-     * @param {object} options.templates - templates
-     * @param {string} options.templates.method
-     * @param {string} options.templates.class
-     * @param {string} options.templates.extension
-     * @param {string} options.templates.summary
+     * @param {object?} options.templates - templates
+     * @param {string?} options.templates.summary
+     * @param {string?} options.templates.method
+     * @param {string?} options.templates.class
+     * @param {string?} options.templates.extension
+     * @param {string?} options.templates.gvar
      * @param {function(parseField: string, outputFolder: string, data: object): string} options.mdLinkParser
      * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]} options.mdTextParser
      */
@@ -36,11 +42,13 @@ module.exports = class WikiExtract {
         if (!libPath) throw new Error('[WikiExtract] Missing lib path');
         if (!outputPath) throw new Error('[WikiExtract] Missing output path');
 
-        if (!options.templates) throw new Error('[WikiExtract] Missing templates');
-        if (!options.templates.method) throw new Error('[WikiExtract] Missing method template path');
-        if (!options.templates.class) throw new Error('[WikiExtract] Missing class template path');
-        if (!options.templates.extension) throw new Error('[WikiExtract] Missing extension template path');
-        if (!options.templates.summary) throw new Error('[WikiExtract] Missing summary template path');
+        if (!options) options = {};
+        if (!options.templates) options.templates = {};
+
+        if (!options.templates.method) options.templates.method = defaultTemplate;
+        if (!options.templates.class) options.templates.class = defaultTemplate;
+        if (!options.templates.extension) options.templates.extension = defaultTemplate;
+        if (!options.templates.gvar) options.templates.gvar = defaultTemplate;
 
         // Setup method overrides
         MDGenerator.setTextMDParser(options.mdTextParser);
@@ -70,11 +78,13 @@ module.exports = class WikiExtract {
         if (!summaryMap || summaryMap.length <= 0) throw new Error(`[WikiExtract] Failed to generate wiki? Summary can't be generated`);
 
         // GENERATE SUMMARY.md
-        console.warn(`== Generating summary`);
-        const summary = await SummaryGenerator.generate(this.#outputPath, summaryMap, this.#options.templates.summary);
+        if (this.#options.templates.summary) {
+            console.warn(`== Generating summary`);
+            const summary = await SummaryGenerator.generate(this.#outputPath, summaryMap, this.#options.templates.summary);
 
-        fs.writeFileSync(`./SUMMARY.md`, summary, { encoding: 'utf-8' });
-        console.warn(`Wrote summary file`);
+            fs.writeFileSync(`./SUMMARY.md`, summary, { encoding: 'utf-8' });
+            console.warn(`Wrote summary file`);
+        }
 
         // Done, no pre-cleanup steps
         console.warn(`== Success!`);
