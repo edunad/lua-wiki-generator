@@ -11,9 +11,9 @@ AABB's entry class<br>
 
 | Type   | Name | Optional |
 | ------ | ---- | -------: |
-| [Vector](./readme/vector.md) | pos |  |
-| [Vector](./readme/vector.md) | size |  |
-|  | meep |  |
+| [Vector](./readme/vector.md) | pos |   |
+| [Vector](./readme/vector.md) | size |   |
+|  | meep |   |
 "
 `;
 
@@ -38,7 +38,7 @@ Returns true if the number is NaN (not a number)<br>It also does some other magi
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
-| number | val | No description |  |
+| number | val | No description |   |
 
 -----------------
 ## Returns
@@ -85,7 +85,7 @@ console:execute({"my_command", "true"})
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
-| string[] | args | No description |  |
+| string[] | args | No description |   |
 
 -----------------
 ## Returns
@@ -130,7 +130,7 @@ Executes a console command programmatically<br>
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
-| string[]" | "args | No description |  |
+| string[]" | "args | No description |   |
 "
 `;
 
