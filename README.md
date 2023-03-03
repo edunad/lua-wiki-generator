@@ -137,9 +137,15 @@ $DEPRECATED$$HINTS$$METHOD$$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$$FIELDS$
                 gvar: gvarTemplate,
             },
             mdTextParser: (folder, template, codeBlock) => {
-                return [true, template.replace(/\$MY_CUSTOM_FIELD\$/g, 'hi')]; // Pass true to use default parsers, false to disable them
+                // Pass true to use default parsers, false to disable them
+                return [true, template.replace(/\$MY_CUSTOM_FIELD\$/g, 'hi')];
+            },
+            mdHintParser: (hint) => {
+                // Custom handle hints / Admonitions, by default it uses the Docusaurus format (https://docusaurus.io/docs/markdown-features/admonitions)
+                return `:::\n${hint.type} -> ${hint.message}\n`;
             },
             mdLinkParser: (type, outputFolder, data) => {
+                // Handle linking
                 if (type === '$TITLE_NAME$') {
                     return `[TITLE](My title link:${data.link})`;
                 } else if (type === '$PARAMETERS$' || type === '$RETURNS$' || type === '$FIELDS$') {

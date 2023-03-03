@@ -8,9 +8,11 @@
 module.exports = class MDGenerator {
     static #textMDParser;
     static #linkMDParser;
+    static #hintMDParser;
 
     constructor() {
         this.#linkMDParser = this.#defaultLinkParser;
+        this.#hintMDParser = this.#defaultHintParser;
     }
 
     /**
@@ -24,11 +26,20 @@ module.exports = class MDGenerator {
 
     /**
      * Sets the link md parser
-     * @param {function(string, string): string} parser
+     * @param {function(type: string, outputFolder: string, data: object): string} parser
      * @returns {void}
      */
     static setLinkMDParser = (parser) => {
         this.#linkMDParser = parser ? parser : this.#defaultLinkParser;
+    };
+
+    /**
+     * Sets the hint md parser
+     * @param {function(object): string} parser
+     * @returns {void}
+     */
+    static setHintMDParser = (parser) => {
+        this.#hintMDParser = parser ? parser : this.#defaultHintParser;
     };
 
     /**
@@ -81,7 +92,7 @@ module.exports = class MDGenerator {
 
         if (data.commentBlock.description) {
             data.commentBlock.description.forEach((desc) => {
-                description += `${desc}<br>`;
+                description += `${desc}<br/>`;
             });
 
             description += `\n`;
@@ -128,6 +139,29 @@ module.exports = class MDGenerator {
     };
 
     /**
+     * Parses the hints
+     * @param {string} template - md template
+     * @param {object} data - comment block data
+     *
+     * @returns {string}
+     */
+    static #parseHint = (template, data) => {
+        let hints = '';
+
+        if (data.commentBlock.hints.length > 0) {
+            hints += '\n';
+
+            data.commentBlock.hints.forEach((hint) => {
+                hints += this.#hintMDParser(hint);
+            });
+
+            hints += '\n';
+        }
+
+        return template.replace(/\$HINTS\$/g, hints);
+    };
+
+    /**
      * Parses the method name
      * @param {string} template - md template
      * @param {object} data - comment block data
@@ -144,29 +178,6 @@ module.exports = class MDGenerator {
         }
 
         return template.replace(/\$METHOD\$/g, method);
-    };
-
-    /**
-     * Parses the hints
-     * @param {string} template - md template
-     * @param {object} data - comment block data
-     *
-     * @returns {string}
-     */
-    static #parseHint = (template, data) => {
-        let hints = '';
-        if (data.commentBlock.hints.length > 0) {
-            hints += '\n';
-
-            data.commentBlock.hints.forEach((hint) => {
-                if (hint.message.trim() === '') return;
-                hints += `{% hint style="${hint.type}" %} ${hint.message} {% endhint %}\n`;
-            });
-
-            hints += '\n';
-        }
-
-        return template.replace(/\$HINTS\$/g, hints);
     };
 
     /**
@@ -298,5 +309,17 @@ module.exports = class MDGenerator {
         }
 
         throw new Error(`Unknown type: ${type}`);
+    };
+
+    /**
+     * The default hint parser
+     * @param {string} template - md template
+     * @param {object} data - comment block data
+     *
+     * @returns {string}
+     */
+    static #defaultHintParser = (hint) => {
+        if (hint.message.trim() === '') return;
+        return `:::${hint.type}\n${hint.message}\n:::\n`;
     };
 };

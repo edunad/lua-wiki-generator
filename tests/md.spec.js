@@ -32,6 +32,7 @@ describe('MDMethod', () => {
     beforeEach(() => {
         MDParser.setTextMDParser(null);
         MDParser.setLinkMDParser(null);
+        MDParser.setHintMDParser(null);
     });
 
     it('Successfully generates a class MD file', async () => {
@@ -116,13 +117,19 @@ describe('MDMethod', () => {
         expect(data.blocks.length).toBe(1);
 
         MDParser.setTextMDParser((outputFolder, template, block) => {
-            return [false, template.replace('$MY_CUSTOM_METHOD$', block.type)];
+            return [true, template.replace('$MY_CUSTOM_METHOD$', block.type)];
         });
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.custom_method, data.blocks[0])).toMatchSnapshot();
+        MDParser.setLinkMDParser((type, outputFolder, data) => {
+            if (type === '$TITLE_NAME$') {
+                return `[TITLE](My title link)`;
+            }
 
-        MDParser.setTextMDParser((outputFolder, template, block) => {
-            return [true, template.replace('$MY_CUSTOM_METHOD$', block.type)];
+            return template;
+        });
+
+        MDParser.setHintMDParser((hint) => {
+            return `:::\n${hint.type} -> ${hint.message}\n`;
         });
 
         expect(MDParser.generate(OUTPUT_FOLDER, this.templates.custom_method, data.blocks[0])).toMatchSnapshot();

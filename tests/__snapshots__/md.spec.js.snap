@@ -4,7 +4,7 @@ exports[`MDMethod Successfully generates a class MD file 1`] = `
 "# AABB
 
 ### <img src="../../.gitbook/assets/base.png" width="32" height="32" /> AABB
-AABB's entry class<br>
+AABB's entry class<br/>
 
 -----------------
 ## Fields
@@ -24,14 +24,16 @@ exports[`MDMethod Successfully generates a extension MD file 1`] = `
 
 > ⚠ Deprecated: Do not use this anymore
 
-{% hint style="success" %} OH NOOOOOOO {% endhint %}
+:::success
+OH NOOOOOOO
+:::
 
 
 \`\`\`lua
 boolean math.isNan(val)
 \`\`\`
 
-Returns true if the number is NaN (not a number)<br>It also does some other magic<br>
+Returns true if the number is NaN (not a number)<br/>It also does some other magic<br/>
 
 -----------------
 ## Parameters
@@ -54,9 +56,11 @@ exports[`MDMethod Successfully generates a gvar MD file 1`] = `
 
 ### <img src="../../.gitbook/assets/global.png" width="32" height="32" /> **_G**.SERVER
 
-{% hint style="info" %} For SHARED code, just don't check for SERVER or CLIENT {% endhint %}
+:::info
+For SHARED code, just don't check for SERVER or CLIENT
+:::
 
-Returns true if the current code is running on the SERVER<br>
+Returns true if the current code is running on the SERVER<br/>
 "
 `;
 
@@ -65,15 +69,19 @@ exports[`MDMethod Successfully generates a method MD file 1`] = `
 
 ### <img src="../../.gitbook/assets/shared.png" width="32" height="32" /> [console](./readme/console.md):execute
 
-{% hint style="warning" %} PAGE / FUNCTIONALITY STILL IN CONSTRUCTION {% endhint %}
-{% hint style="danger" %} OH NOOOOOOO {% endhint %}
+:::warning
+PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
+:::
+:::danger
+OH NOOOOOOO
+:::
 
 
 \`\`\`lua
 boolean, string console:execute(args)
 \`\`\`
 
-Executes a console command programmatically<br>
+Executes a console command programmatically<br/>
 \`\`\`lua
 --my_command is the command to execute, true is a parameter
 console:execute({"my_command", "true"})
@@ -98,16 +106,16 @@ console:execute({"my_command", "true"})
 `;
 
 exports[`MDMethod Successfully handles custom parsers 1`] = `
-"## ![$SCOPE$](.gitbook/assets/$SCOPE$.png) $TITLE_NAME$
+"## ![shared](.gitbook/assets/shared.png) [TITLE](My title link)
 
 METHOD
-"
-`;
 
-exports[`MDMethod Successfully handles custom parsers 2`] = `
-"## ![shared](.gitbook/assets/shared.png) [console](./readme/console.md):execute
+:::
+warning -> PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
+:::
+danger -> OH NOOOOOOO
 
-METHOD
+
 "
 `;
 
@@ -116,14 +124,16 @@ exports[`MDMethod Successfully handles missing fields 1`] = `
 
 ### <img src="../../.gitbook/assets/unknown.png" width="32" height="32" /> [console](./readme/console.md):execute
 
-{% hint style="uhhhh" %} OH NOOOOOOO {% endhint %}
+:::uhhhh
+OH NOOOOOOO
+:::
 
 
 \`\`\`lua
 void console:execute(args)
 \`\`\`
 
-Executes a console command programmatically<br>
+Executes a console command programmatically<br/>
 
 -----------------
 ## Parameters

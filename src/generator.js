@@ -35,8 +35,9 @@ module.exports = class WikiExtract {
      * @param {string?} options.templates.class
      * @param {string?} options.templates.extension
      * @param {string?} options.templates.gvar
-     * @param {function(parseField: string, outputFolder: string, data: object): string} options.mdLinkParser
-     * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]} options.mdTextParser
+     * @param {function(type: string, outputFolder: string, data: object): string?} options.mdLinkParser
+     * @param {function(hint: object): string?} options.mdHintParser
+     * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]?} options.mdTextParser
      */
     constructor(libPath, outputPath, options) {
         if (!libPath) throw new Error('[WikiExtract] Missing lib path');
@@ -53,6 +54,7 @@ module.exports = class WikiExtract {
         // Setup method overrides
         MDGenerator.setTextMDParser(options.mdTextParser);
         MDGenerator.setLinkMDParser(options.mdLinkParser);
+        MDGenerator.setHintMDParser(options.mdHintParser);
         SummaryGenerator.setLinkMDParser(options.mdLinkParser);
         // ---
 
