@@ -78,7 +78,7 @@ OH NOOOOOOO
 
 
 \`\`\`lua
-boolean, string console:execute(args)
+boolean, string console:execute(args, var)
 \`\`\`
 
 Executes a console command programmatically<br/>
@@ -94,6 +94,9 @@ console:execute({"my_command", "true"})
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
 | string[] | args | No description |   |
+| number | var | No description |   |
+| string | var | No description |   |
+| boolean | var | No description |   |
 
 -----------------
 ## Returns

@@ -105,9 +105,9 @@ module.exports = class LuaParser {
         const primitives = ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table', 'any', 'void'];
 
         const fixedStr = type.toLowerCase().trim();
-        const name = fixedStr.split('[');
+        const name = fixedStr.split('[')[0];
 
-        return primitives.includes(name[0] || fixedStr);
+        return primitives.includes(fixedStr) || primitives.includes(name);
     };
 
     /**
@@ -149,25 +149,32 @@ module.exports = class LuaParser {
     /**
      * Parse and extract parameters
      * @param {string} line - the reading line
-     * @returns {object}
+     * @returns {object[]}
      */
     #parseParam = (line) => {
         //---@param callback function bla
         const paramRegex = [...line.matchAll(/---@param ([^ \r\n]*) ([^ \r\n]*) ?"?([^"\r\n]*)?"?/g)];
         if (!paramRegex || paramRegex.length !== 1) return null;
 
-        const params = paramRegex[0];
-        if (!params || params.length < 3) return null;
-        const isOptional = params[1].indexOf('?') !== -1;
+        const rawParams = paramRegex[0];
+        if (!rawParams || rawParams.length < 3) return null;
 
-        return {
-            name: params[1].replace('?', ''),
-            type: params[2],
-            description: params[3] || 'No description',
-            optional: isOptional,
+        const isOptional = rawParams[1].indexOf('?') !== -1;
+        const params = rawParams[2].split('|');
 
-            link: this.#isLuaPrimitive(params[2]) ? null : params[2],
-        };
+        const ret = [];
+        params.forEach((param) => {
+            ret.push({
+                name: rawParams[1].replace('?', ''),
+                type: param,
+                description: rawParams[3] || 'No description',
+                optional: isOptional,
+
+                link: this.#isLuaPrimitive(param) ? null : param,
+            });
+        });
+
+        return ret;
     };
 
     /**
@@ -369,8 +376,8 @@ module.exports = class LuaParser {
             this.#currentCommentBlock = this.#getDefaultBlock(); // Reset
         } else {
             if (line.startsWith('---@param')) {
-                const param = this.#parseParam(line);
-                if (param) this.#currentCommentBlock.params.push(param);
+                const params = this.#parseParam(line);
+                if (params) params.forEach((param) => this.#currentCommentBlock.params.push(param));
             } else if (line.startsWith('---@return')) {
                 const ret = this.#parseReturn(line);
                 if (ret) this.#currentCommentBlock.returns.push(ret);

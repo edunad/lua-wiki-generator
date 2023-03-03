@@ -3,6 +3,7 @@
 ---
 ---@env SHARED
 ---@param args string[]
+---@param var number|string|boolean
 ---@return boolean "If command was executed successfully"
 ---@return string
 ---@hint @warning "PAGE / FUNCTIONALITY STILL IN CONSTRUCTION"
@@ -14,4 +15,5 @@
 ---console:execute({"my_command", "true"})
 ---```
 ---
-function console:execute(args) end
+function console:execute(args, var)
+end

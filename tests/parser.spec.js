@@ -80,7 +80,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].title.msg).toBe('console:execute');
         expect(data.blocks[0].title.link).toBe('console');
 
-        expect(data.blocks[0].method).toBe('boolean, string console:execute(args)');
+        expect(data.blocks[0].method).toBe('boolean, string console:execute(args, var)');
         expect(data.blocks[0].commentBlock).not.toBe(undefined);
 
         expect(data.blocks[0].commentBlock.description).not.toBe(undefined);
@@ -117,7 +117,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.returns[1].link).toBe(null);
 
         expect(data.blocks[0].commentBlock.params).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.params.length).toBe(1);
+        expect(data.blocks[0].commentBlock.params.length).toBe(4);
         expect(data.blocks[0].commentBlock.params[0].description).toBe('No description');
         expect(data.blocks[0].commentBlock.params[0].name).toBe('args');
         expect(data.blocks[0].commentBlock.params[0].optional).toBe(false);

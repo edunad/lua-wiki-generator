@@ -125,7 +125,7 @@ describe('MDMethod', () => {
                 return `[TITLE](My title link)`;
             }
 
-            return template;
+            return data;
         });
 
         MDParser.setHintMDParser((hint) => {
