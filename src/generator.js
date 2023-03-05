@@ -3,7 +3,7 @@
 
 const fs = require('fs-extra');
 const glob = require('fast-glob');
-const { basename } = require('path');
+const { basename, dirname } = require('path');
 
 const LuaParser = require('./parser.js');
 const MDGenerator = require('./md.js');
@@ -29,6 +29,8 @@ module.exports = class WikiExtract {
      * @param {string} outputPath - the output folder
      * @param {object} options - options
      * @param {boolean} options.clean - if it should clean the output folder
+     * @param {boolean} options.verbose
+     * @param {string} options.glob - default: **\/*.lua
      * @param {object?} options.templates - templates
      * @param {string?} options.templates.summary
      * @param {string?} options.templates.method
@@ -38,6 +40,7 @@ module.exports = class WikiExtract {
      * @param {function(type: string, outputFolder: string, data: object): string?} options.mdLinkParser
      * @param {function(hint: object): string?} options.mdHintParser
      * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]?} options.mdTextParser
+     * @param {function(file: string): string?} options.mdFolderParser
      */
     constructor(libPath, outputPath, options) {
         if (!libPath) throw new Error('[WikiExtract] Missing lib path');
@@ -51,6 +54,11 @@ module.exports = class WikiExtract {
         if (!options.templates.extension) options.templates.extension = defaultTemplate;
         if (!options.templates.gvar) options.templates.gvar = defaultTemplate;
 
+        if (!options.mdFolderParser) options.mdFolderParser = this.#defaultMdFolderParser;
+
+        if (!options.glob) options.glob = '**/*.lua';
+        if (libPath.indexOf(options.glob) !== -1) libPath.replace(options.glob, '');
+
         // Setup method overrides
         MDGenerator.setTextMDParser(options.mdTextParser);
         MDGenerator.setLinkMDParser(options.mdLinkParser);
@@ -63,29 +71,34 @@ module.exports = class WikiExtract {
         this.#options = options;
     }
 
+    warn = (txt, ...args) => {
+        if (!this.#options.verbose) return;
+        console.warn(txt, ...args);
+    };
+
     /**
      * Reads lua files comments and generates markdown files
      * @returns {Promise<void>}
      */
     extract = async () => {
-        console.warn(`== Setup`);
+        this.warn(`== Setup`);
 
         // Cleanup
         await this.#cleanOutput();
 
         // GENERATE WIKI
-        console.warn(`== Generating wiki`);
+        this.warn(`== Generating wiki`);
 
         const summaryMap = await this.#generateWiki();
         if (!summaryMap || summaryMap.length <= 0) throw new Error(`[WikiExtract] Failed to generate wiki? Summary can't be generated`);
 
         // GENERATE SUMMARY.md
         if (this.#options.templates.summary) {
-            console.warn(`== Generating summary`);
+            this.warn(`== Generating summary`);
             const summary = await SummaryGenerator.generate(this.#outputPath, summaryMap, this.#options.templates.summary);
 
             fs.writeFileSync(`./SUMMARY.md`, summary, { encoding: 'utf-8' });
-            console.warn(`Wrote summary file`);
+            this.warn(`Wrote summary file`);
         }
 
         // Done, no pre-cleanup steps
@@ -103,6 +116,14 @@ module.exports = class WikiExtract {
     };
 
     /**
+     * Default folder parser
+     * @returns {Promise<void>}
+     */
+    #defaultMdFolderParser = (file) => {
+        return basename(file).replace('.lua', '').toLowerCase();
+    };
+
+    /**
      * Generates the wiki files
      *
      * @returns {Promise<void>}
@@ -110,11 +131,18 @@ module.exports = class WikiExtract {
     #generateWiki = async () => {
         const summaryMap = {};
 
-        const luaFiles = await glob([`${this.#libPath}`], { followSymbolicLinks: true, dot: true });
+        const luaFiles = await glob([`${this.#libPath}/${this.#options.glob}`], { followSymbolicLinks: true, dot: true, objectMode: true });
         if (!luaFiles) throw new Error('No lua files found');
 
         // Parse files
-        const parsePromises = luaFiles.map((file) => new LuaParser(file).parseLua());
+        let linkMap = {};
+        const parsePromises = luaFiles.map((file) => {
+            return new LuaParser(this.#libPath, file.path.replace(`${this.#libPath}/`, '')).parseLua().then((data) => {
+                if (data.linkMap) linkMap = { ...linkMap, ...data.linkMap };
+                return data.blocks;
+            });
+        });
+
         const parsedData = await Promise.all(parsePromises);
 
         // GENERATE MD FILES ----
@@ -122,8 +150,9 @@ module.exports = class WikiExtract {
             if (!data.blocks || data.blocks.length <= 0) return;
 
             // Generate folder
-            const folderTitle = basename(data.file).replace('ias.', '').replace('.lua', '').toLowerCase();
+            const folderTitle = this.#options.mdFolderParser(data.file);
             fs.ensureDirSync(`${this.#outputPath}/${folderTitle}`);
+            // -----
 
             const hasSingleClass = data.blocks.filter((block) => block.type === 'CLASS').length === 1;
 
@@ -134,14 +163,14 @@ module.exports = class WikiExtract {
                 const template = this.#options.templates[blockType];
                 if (!template) throw new Error(`[WikiExtract] Missing template for '${blockType}'`);
 
-                let mdData = MDGenerator.generate(this.#outputPath, this.#options.templates[codeBlock.type.toLowerCase()], codeBlock);
-                if (mdData.trim() === '') return console.warn(`Failed to generate md for type '${blockType}'`);
+                let mdData = MDGenerator.generate(linkMap, this.#options.templates[codeBlock.type.toLowerCase()], codeBlock);
+                if (mdData.trim() === '') return this.warn(`Failed to generate md for type '${blockType}'`);
 
                 let fileName = codeBlock.title.msg.split(':');
                 if (!fileName || fileName.length <= 1) fileName = codeBlock.title.msg;
                 else fileName = fileName[1];
 
-                let output = `${this.#outputPath}/${folderTitle}/${folderTitle}_${fileName}.md`;
+                let output = `${this.#outputPath}/${folderTitle}/${fileName}.md`;
                 if (blockType === 'class' && hasSingleClass) output = `${this.#outputPath}/${folderTitle}/README.md`;
 
                 summaryMap[output] = {
@@ -150,7 +179,7 @@ module.exports = class WikiExtract {
                 };
 
                 fs.writeFileSync(output, mdData, { encoding: 'utf-8' });
-                console.warn(`Wrote wiki file: '${output}' | Using template type '${blockType}'`);
+                this.warn(`Wrote wiki file: '${output}' | Using template type '${blockType}'`);
             });
         });
 

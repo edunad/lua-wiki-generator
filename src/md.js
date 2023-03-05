@@ -26,7 +26,7 @@ module.exports = class MDGenerator {
 
     /**
      * Sets the link md parser
-     * @param {function(type: string, outputFolder: string, data: object): string} parser
+     * @param {function(type: string, folder: string, data: object): string} parser
      * @returns {void}
      */
     static setLinkMDParser = (parser) => {
@@ -44,17 +44,18 @@ module.exports = class MDGenerator {
 
     /**
      * Generates the md with the given template
+     * @param {object} linkMap - a map containing all the links
      * @param {string} template - md template
      * @param {object} data - comment block data
      *
      * @returns {string}
      */
-    static generate = (outputPath, template, data) => {
+    static generate = (linkMap, template, data) => {
         if (!template || template.trim() === '') throw new Error('[MDGenerator] Invalid md template');
         if (!data) throw new Error('[MDGenerator] Invalid data');
 
         if (this.#textMDParser) {
-            const result = this.#textMDParser(outputPath, template, data);
+            const result = this.#textMDParser(linkMap, template, data);
 
             if (result && result.length == 2) {
                 if (!result[0]) return result[1];
@@ -68,13 +69,13 @@ module.exports = class MDGenerator {
 
         template = this.#parseDescription(template, data);
         template = this.#parseScope(template, data);
-        template = this.#parseTitle(outputPath, template, data);
+        template = this.#parseTitle(linkMap, template, data);
         template = this.#parseMethodName(template, data);
         template = this.#parseHint(template, data);
-        template = this.#parseParameters(outputPath, template, data);
-        template = this.#parseReturns(outputPath, template, data);
+        template = this.#parseParameters(linkMap, template, data);
+        template = this.#parseReturns(linkMap, template, data);
         template = this.#parseExamples(template, data);
-        template = this.#parseFields(outputPath, template, data);
+        template = this.#parseFields(linkMap, template, data);
         template = this.#parseDeprecated(template, data);
 
         return template;
@@ -117,21 +118,22 @@ module.exports = class MDGenerator {
 
     /**
      * Parses the title
+     * @param {object} linkMap
      * @param {string} template - md template
      * @param {object} data - comment block data
      *
      * @returns {string}
      */
-    static #parseTitle = (outputPath, template, data) => {
+    static #parseTitle = (linkMap, template, data) => {
         let title = '';
 
         if (data.title) {
             const isDeprecated = data.commentBlock.deprecated.length !== 0;
 
             if (isDeprecated) {
-                title = data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', outputPath, data)}~~` : `~~${data.title.msg}~~`;
+                title = data.title.link ? `~~${this.#linkMDParser('$TITLE_NAME$', linkMap, data)}~~` : `~~${data.title.msg}~~`;
             } else {
-                title = data.title.link ? this.#linkMDParser('$TITLE_NAME$', outputPath, data) : data.title.msg;
+                title = data.title.link ? this.#linkMDParser('$TITLE_NAME$', linkMap, data) : data.title.msg;
             }
         }
 
@@ -203,12 +205,13 @@ module.exports = class MDGenerator {
 
     /**
      * Parses the parameters
+     * @param {object} linkMap
      * @param {string} template - md template
      * @param {object} data - comment block data
      *
      * @returns {string}
      */
-    static #parseParameters = (outputPath, template, data) => {
+    static #parseParameters = (linkMap, template, data) => {
         let params = '';
         if (data.commentBlock.params.length > 0) {
             params += `\n-----------------\n`;
@@ -217,7 +220,7 @@ module.exports = class MDGenerator {
             params += `| ------ | ---- | ----------- | -------: |\n`;
 
             data.commentBlock.params.forEach((param) => {
-                const type = param.link ? this.#linkMDParser('$PARAMETERS$', outputPath, param) : param.type;
+                const type = param.link ? this.#linkMDParser('$PARAMETERS$', linkMap, param) : param.type;
                 params += `| ${type} | ${param.name} | ${param.description} | ${param.optional ? '✔' : ' '} |\n`;
             });
         }
@@ -227,12 +230,13 @@ module.exports = class MDGenerator {
 
     /**
      * Parses the returns
+     * @param {object} linkMap
      * @param {string} template - md template
      * @param {object} data - comment block data
      *
      * @returns {string}
      */
-    static #parseReturns = (outputPath, template, data) => {
+    static #parseReturns = (linkMap, template, data) => {
         let returns = '';
         if (data.commentBlock.returns.length > 0) {
             returns += `\n-----------------\n`;
@@ -241,7 +245,7 @@ module.exports = class MDGenerator {
             returns += `| ------ | ----------: |\n`;
 
             data.commentBlock.returns.forEach((ret) => {
-                const type = ret.link ? this.#linkMDParser('$RETURNS$', outputPath, ret) : ret.type;
+                const type = ret.link ? this.#linkMDParser('$RETURNS$', linkMap, ret) : ret.type;
                 returns += `| ${type} | ${ret.description} |\n`;
             });
         }
@@ -251,12 +255,13 @@ module.exports = class MDGenerator {
 
     /**
      * Parses the fields
+     * @param {object} linkMap
      * @param {string} template - md template
      * @param {object} data - comment block data
      *
      * @returns {string}
      */
-    static #parseFields = (outputPath, template, data) => {
+    static #parseFields = (linkMap, template, data) => {
         let fields = '';
         if (data.commentBlock.fields.length > 0) {
             fields += `\n-----------------\n`;
@@ -265,7 +270,7 @@ module.exports = class MDGenerator {
             fields += `| ------ | ---- | -------: |\n`;
 
             data.commentBlock.fields.forEach((field) => {
-                const type = field.link ? this.#linkMDParser('$FIELDS$', outputPath, field) : field.type;
+                const type = field.link ? this.#linkMDParser('$FIELDS$', linkMap, field) : field.type;
                 fields += `| ${type} | ${field.name} | ${field.optional ? '✔' : ' '} |\n`;
             });
         }
@@ -296,17 +301,23 @@ module.exports = class MDGenerator {
     /**
      * The default link parser
      * @param {string} type
-     * @param {string} outputPath
+     * @param {object} linkMap
      * @param {object} data
      *
      * @returns {string}
      */
-    static #defaultLinkParser = (type, outputPath, data) => {
-        if (type === '$TITLE_NAME$') {
-            return `[${data.title.link}](${outputPath}/${data.title.link.toLowerCase()}.md)${data.title.msg.replace(data.title.link, '')}`;
+    static #defaultLinkParser = (type, linkMap, data) => {
+        /*if (type === '$TITLE_NAME$') {
+            const link = linkMap[data.title.link];
+            if (!link) throw new Error(`Unknown type: ${data.title.link}`);
+
+            return `[${data.title.link}](${link}/README.md)${data.title.msg.replace(data.title.link, '')}`;
         } else if (type === '$PARAMETERS$' || type === '$RETURNS$' || type === '$FIELDS$') {
-            return `[${data.link}](${outputPath}/${data.link.toLowerCase()}.md)`;
-        }
+            const link = linkMap[data.link];
+            if (!link) throw new Error(`Unknown type: ${data.link}`);
+
+            return `[${data.link}](${link}/README.md)`;
+        }*/
 
         throw new Error(`Unknown type: ${type}`);
     };

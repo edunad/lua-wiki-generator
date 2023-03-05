@@ -6,8 +6,7 @@ const LuaParser = require('../src/parser.js');
 
 describe('LUAParser', () => {
     it('Parses classes', async () => {
-        const file = `./__test_lua__/ias.class_test.lua`;
-        const parser = new LuaParser(resolve(__dirname, file));
+        const parser = new LuaParser(resolve(__dirname, `./__test_lua__`), 'ias.class_test.lua');
 
         expect(parser).not.toBe(undefined);
 
@@ -63,8 +62,7 @@ describe('LUAParser', () => {
     });
 
     it('Parses methods', async () => {
-        const file = `./__test_lua__/ias.method_test.lua`;
-        const parser = new LuaParser(resolve(__dirname, file));
+        const parser = new LuaParser(resolve(__dirname, `./__test_lua__`), 'ias.method_test.lua');
 
         expect(parser).not.toBe(undefined);
 
@@ -126,8 +124,7 @@ describe('LUAParser', () => {
     });
 
     it('Parses extensions', async () => {
-        const file = `./__test_lua__/ias.extension_test.lua`;
-        const parser = new LuaParser(resolve(__dirname, file));
+        const parser = new LuaParser(resolve(__dirname, `./__test_lua__`), 'ias.extension_test.lua');
 
         expect(parser).not.toBe(undefined);
 
@@ -181,8 +178,7 @@ describe('LUAParser', () => {
     });
 
     it('Parses gvars', async () => {
-        const file = `./__test_lua__/ias.gvar_test.lua`;
-        const parser = new LuaParser(resolve(__dirname, file));
+        const parser = new LuaParser(resolve(__dirname, `./__test_lua__`), 'ias.gvar_test.lua');
 
         expect(parser).not.toBe(undefined);
 
