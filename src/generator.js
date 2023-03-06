@@ -25,21 +25,21 @@ module.exports = class WikiExtract {
 
     /**
      * @constructor
-     * @param {string} libPath - the input folder with the lua lib (supports glob)
+     * @param {string} libPath - the input folder with the lua lib
      * @param {string} outputPath - the output folder
      * @param {object} options - options
-     * @param {boolean} options.clean - if it should clean the output folder
-     * @param {boolean} options.verbose
-     * @param {string} options.glob - default: **\/*.lua
+     * @param {string} options.glob - (default: **\/*.lua)
+     * @param {boolean?} options.clean - if it should clean the output folder (default: true)
+     * @param {boolean?} options.silent - hides output log (default: false)
      * @param {object?} options.templates - templates
      * @param {string?} options.templates.summary
      * @param {string?} options.templates.method
      * @param {string?} options.templates.class
      * @param {string?} options.templates.extension
      * @param {string?} options.templates.gvar
-     * @param {function(type: string, outputFolder: string, data: object): string?} options.mdLinkParser
+     * @param {function(type: string, linkMap: object, data: object): string?} options.mdLinkParser
      * @param {function(hint: object): string?} options.mdHintParser
-     * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]?} options.mdTextParser
+     * @param {function(linkMap: object, template: string, data: object): [boolean, string]?} options.mdTextParser
      * @param {function(file: string): string?} options.mdFolderParser
      */
     constructor(libPath, outputPath, options) {
@@ -57,7 +57,6 @@ module.exports = class WikiExtract {
         if (!options.mdFolderParser) options.mdFolderParser = this.#defaultMdFolderParser;
 
         if (!options.glob) options.glob = '**/*.lua';
-        if (libPath.indexOf(options.glob) !== -1) libPath.replace(options.glob, '');
 
         // Setup method overrides
         MDGenerator.setTextMDParser(options.mdTextParser);
@@ -72,7 +71,7 @@ module.exports = class WikiExtract {
     }
 
     warn = (txt, ...args) => {
-        if (!this.#options.verbose) return;
+        if (this.#options.silent) return;
         console.warn(txt, ...args);
     };
 
@@ -139,7 +138,7 @@ module.exports = class WikiExtract {
         const parsePromises = luaFiles.map((file) => {
             return new LuaParser(this.#libPath, file.path.replace(`${this.#libPath}/`, '')).parseLua().then((data) => {
                 if (data.linkMap) linkMap = { ...linkMap, ...data.linkMap };
-                return data.blocks;
+                return data;
             });
         });
 

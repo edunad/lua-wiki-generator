@@ -43,11 +43,14 @@ describe('MDMethod', () => {
 
         expect(data).not.toBe(undefined);
         expect(data.linkMap).not.toBe(undefined);
+
+        data.linkMap['Vector'] = 'vector';
+        expect(Object.keys(data.linkMap).length).toBe(2);
+
         expect(data.blocks).not.toBe(undefined);
-        expect(Object.keys(data.linkMap).length).toBe(1);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.class, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.class, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully generates a method MD file', async () => {
@@ -56,10 +59,12 @@ describe('MDMethod', () => {
 
         const data = await parser.parseLua();
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+        expect(Object.keys(data.linkMap).length).toBe(1);
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.method, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.method, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully generates a extension MD file', async () => {
@@ -68,10 +73,12 @@ describe('MDMethod', () => {
 
         const data = await parser.parseLua();
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+        expect(Object.keys(data.linkMap).length).toBe(1);
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.extension, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.extension, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully generates a gvar MD file', async () => {
@@ -80,10 +87,12 @@ describe('MDMethod', () => {
 
         const data = await parser.parseLua();
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+        expect(Object.keys(data.linkMap).length).toBe(1);
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.gvar, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.gvar, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully handles unknown fields', async () => {
@@ -92,10 +101,15 @@ describe('MDMethod', () => {
 
         const data = await parser.parseLua();
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+
+        data.linkMap['console'] = 'readme/';
+        expect(Object.keys(data.linkMap).length).toBe(2);
+
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.invalid, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.invalid, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully handles missing fields', async () => {
@@ -103,11 +117,17 @@ describe('MDMethod', () => {
         expect(parser).not.toBe(undefined);
 
         const data = await parser.parseLua();
+
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+
+        data.linkMap['console'] = 'readme/';
+        expect(Object.keys(data.linkMap).length).toBe(2);
+
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 
-        expect(MDParser.generate(OUTPUT_FOLDER, this.templates.method, data.blocks[0])).toMatchSnapshot();
+        expect(MDParser.generate(data.linkMap, this.templates.method, data.blocks[0])).toMatchSnapshot();
     });
 
     it('Successfully handles custom parsers', async () => {
@@ -116,6 +136,8 @@ describe('MDMethod', () => {
 
         const data = await parser.parseLua();
         expect(data).not.toBe(undefined);
+        expect(data.linkMap).not.toBe(undefined);
+        expect(Object.keys(data.linkMap).length).toBe(1);
         expect(data.blocks).not.toBe(undefined);
         expect(data.blocks.length).toBe(1);
 

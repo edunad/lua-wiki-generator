@@ -75,7 +75,7 @@ $DEPRECATED$$HINTS$$METHOD$$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$$FIELDS$
         // Input = All lua files inside ias-lib folder & sub-folders
         // Output = ./readme folder
         // Templates will use the default template
-        new WikiExtract('./ias-lib/**/*.lua', './readme').extract();
+        new WikiExtract('./ias-lib', './readme').extract();
     };
 
     init();
@@ -98,7 +98,7 @@ $DEPRECATED$$HINTS$$METHOD$$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$$FIELDS$
         // Input = All lua files inside ias-lib folder & sub-folders
         // Output = ./readme folder
         // NOTE: Summary will be generated since the template is set
-        new WikiExtract('./ias-lib/**/*.lua', './readme', {
+        new WikiExtract('./ias-lib', './readme', {
             templates: {
                 summary: summaryTemplate,
 
@@ -127,7 +127,8 @@ $DEPRECATED$$HINTS$$METHOD$$DESCRIPTION$$EXAMPLE$$PARAMETERS$$RETURNS$$FIELDS$
         const extensionTemplate = fs.readFileSync('./EXTENSION_TEMPLATE.md', 'utf8');
         const gvarTemplate = fs.readFileSync('./GVAR_TEMPLATE.md', 'utf8');
 
-        new WikiExtract('./ias-lib/**/*.lua', './readme', {
+        new WikiExtract('./ias-lib', './readme', {
+            glob: '**/*.lua',
             templates: {
                 summary: summaryTemplate, // Comment out summary to not generate a SUMMARY.md
 
@@ -175,5 +176,5 @@ Either install it globally, or use `npx` to call the cli
 -   Example:
 
     ```bash
-    lua-wiki-generator generate --out "./home" --path "./my-lua-lib/**/*.lua" --method "./METHOD_TEMPLATE.md" --extension "./EXTENSION_TEMPLATE.md" --class "./CLASS_TEMPLATE.md" --summary "./SUMMARY_TEMPLATE.md" --gvar "./GVAR_TEMPLATE.md"
+    lua-wiki-generator generate --out "./home" --path "./my-lua-lib" --glob "**/*.lua'" --method "./METHOD_TEMPLATE.md" --extension "./EXTENSION_TEMPLATE.md" --class "./CLASS_TEMPLATE.md" --summary "./SUMMARY_TEMPLATE.md" --gvar "./GVAR_TEMPLATE.md"
     ```

@@ -17,7 +17,7 @@ module.exports = class MDGenerator {
 
     /**
      * Sets the custom text md parser
-     * @param {function(string, string, object): [boolean, string]} parser
+     * @param {function(linkMap: object, template: string, data: object): [boolean, string]} parser
      * @returns {void}
      */
     static setTextMDParser = (parser) => {
@@ -26,7 +26,7 @@ module.exports = class MDGenerator {
 
     /**
      * Sets the link md parser
-     * @param {function(type: string, folder: string, data: object): string} parser
+     * @param {function(type: string, linkMap: object, data: object): string} parser
      * @returns {void}
      */
     static setLinkMDParser = (parser) => {
@@ -307,17 +307,15 @@ module.exports = class MDGenerator {
      * @returns {string}
      */
     static #defaultLinkParser = (type, linkMap, data) => {
-        /*if (type === '$TITLE_NAME$') {
-            const link = linkMap[data.title.link];
-            if (!link) throw new Error(`Unknown type: ${data.title.link}`);
+        const link = linkMap[data.title?.link ?? data.link];
 
-            return `[${data.title.link}](${link}/README.md)${data.title.msg.replace(data.title.link, '')}`;
+        if (type === '$TITLE_NAME$') {
+            if (link) return `[${data.title.link}](${link}/README.md)${data.title.msg.replace(data.title.link, '')}`;
+            return `${data.title.msg}`;
         } else if (type === '$PARAMETERS$' || type === '$RETURNS$' || type === '$FIELDS$') {
-            const link = linkMap[data.link];
-            if (!link) throw new Error(`Unknown type: ${data.link}`);
-
-            return `[${data.link}](${link}/README.md)`;
-        }*/
+            if (link) return `[${data.link}](${link}/README.md)`;
+            return `${data.link}`;
+        }
 
         throw new Error(`Unknown type: ${type}`);
     };
