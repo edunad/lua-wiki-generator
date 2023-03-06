@@ -11,8 +11,8 @@ AABB's entry class<br/>
 
 | Type   | Name | Optional |
 | ------ | ---- | -------: |
-| [Vector](./readme/vector.md) | pos |   |
-| [Vector](./readme/vector.md) | size |   |
+| [Vector](vector/README.md) | pos |   |
+| [Vector](vector/README.md) | size |   |
 |  | meep |   |
 "
 `;
@@ -65,9 +65,9 @@ Returns true if the current code is running on the SERVER<br/>
 `;
 
 exports[`MDMethod Successfully generates a method MD file 1`] = `
-"# [console](./readme/console.md):execute
+"# console:execute
 
-### <img src="../../.gitbook/assets/shared.png" width="32" height="32" /> [console](./readme/console.md):execute
+### <img src="../../.gitbook/assets/shared.png" width="32" height="32" /> console:execute
 
 :::warning
 PAGE / FUNCTIONALITY STILL IN CONSTRUCTION
@@ -123,9 +123,9 @@ danger -> OH NOOOOOOO
 `;
 
 exports[`MDMethod Successfully handles missing fields 1`] = `
-"# [console](./readme/console.md):execute
+"# [console](readme//README.md):execute
 
-### <img src="../../.gitbook/assets/unknown.png" width="32" height="32" /> [console](./readme/console.md):execute
+### <img src="../../.gitbook/assets/unknown.png" width="32" height="32" /> [console](readme//README.md):execute
 
 :::uhhhh
 OH NOOOOOOO

@@ -38,14 +38,14 @@ describe('SummaryGenerator', () => {
     });
 
     it('Generates summary with a custom link', async () => {
-        SummaryGenerator.setLinkMDParser((type, outputPath, data) => {
+        SummaryGenerator.setLinkMDParser((type, linkMap, data) => {
             if (type === 'SUMMARY') {
                 if (data.fileName) {
                     // Not root
                     return `${data.fileName}`;
                 } else {
                     // ROOT
-                    return `${outputPath}/${data.dir}/MY_ROOT_DOCUMENT.md`;
+                    return `${data.dir}/MY_ROOT_DOCUMENT.md`;
                 }
             }
 

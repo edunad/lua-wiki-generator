@@ -17,7 +17,7 @@ module.exports = class SummaryGenerator {
     }
     /**
      * Sets the link md parser
-     * @param {function(string, string, string): string} parser
+     * @param {function(string, object, string): string} parser
      * @returns {void}
      */
     static setLinkMDParser = (parser) => {
@@ -40,7 +40,7 @@ module.exports = class SummaryGenerator {
 
         let data = '';
         for (const dir of dirs) {
-            data += `  * ${this.#linkMDParser('SUMMARY', outputPath, { dir, fileName: null, name: null })}\n`;
+            data += `  * ${this.#linkMDParser('SUMMARY', {}, { dir, fileName: null, name: null })}\n`;
 
             const mdFiles = await glob([`${outputPath}/${dir}/*.md`], { followSymbolicLinks: true, dot: true });
             mdFiles.forEach((file) => {
@@ -51,7 +51,7 @@ module.exports = class SummaryGenerator {
                 const fileName = basename(file);
                 if (fileName === 'README.md') return;
 
-                data += `    * ${this.#linkMDParser('SUMMARY', outputPath, { name, dir, fileName })}\n`;
+                data += `    * ${this.#linkMDParser('SUMMARY', {}, { name, dir, fileName })}\n`;
             });
         }
 
@@ -61,19 +61,19 @@ module.exports = class SummaryGenerator {
     /**
      * The default link parser
      * @param {string} type
-     * @param {string} outputPath
+     * @param {object} linkMap
      * @param {object} data
      *
      * @returns {string}
      */
-    static #defaultLinkParser = (type, outputPath, data) => {
+    static #defaultLinkParser = (type, linkMap, data) => {
         if (type === 'SUMMARY') {
             if (data.fileName) {
                 // Not root
-                return `[${data.name}](${outputPath}/${data.dir}/${data.fileName})`;
+                return `[${data.name}](${data.dir}/${data.fileName})`;
             } else {
                 // ROOT
-                return `[${data.dir}](${outputPath}/${data.dir}/README.md)`;
+                return `[${data.dir}](${data.dir}/README.md)`;
             }
         }
 

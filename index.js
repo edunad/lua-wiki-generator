@@ -6,14 +6,17 @@
  * @param {string} outputPath - the output folder
  * @param {object} options - options
  * @param {boolean} options.clean - if it should clean the output folder
+ * @param {boolean} options.silent - hides output log
+ * @param {string} options.glob - default: **\/*.lua
  * @param {object?} options.templates - templates
  * @param {string?} options.templates.summary
  * @param {string?} options.templates.method
  * @param {string?} options.templates.class
  * @param {string?} options.templates.extension
  * @param {string?} options.templates.gvar
- * @param {function(type: string, outputFolder: string, data: object): string?} options.mdLinkParser
+ * @param {function(type: string, linkMap: object, data: object): string?} options.mdLinkParser
  * @param {function(hint: object): string?} options.mdHintParser
- * @param {function(outputFolder: string, template: string, blockData: object): [boolean, string]?} options.mdTextParser
+ * @param {function(linkMap: object, template: string, data: object): [boolean, string]?} options.mdTextParser
+ * @param {function(file: string): string?} options.mdFolderParser
  */
 module.exports = require('./src/generator.js');

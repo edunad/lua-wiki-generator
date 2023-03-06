@@ -4,10 +4,10 @@ exports[`SummaryGenerator Generates summary 1`] = `
 "# Table of contents
 
 * [☄ Welcome to the wiki!](README.md)
-  * [console](./tests/__test_summary__/console/README.md)
-    * [bad_class_test:test](./tests/__test_summary__/console/console_bottom.md)
-  * [io](./tests/__test_summary__/io/README.md)
-    * [bad_class_test:test](./tests/__test_summary__/io/io_open.md)
+  * [console](console/README.md)
+    * [bad_class_test:test](console/console_bottom.md)
+  * [io](io/README.md)
+    * [bad_class_test:test](io/io_open.md)
 "
 `;
 
@@ -15,9 +15,9 @@ exports[`SummaryGenerator Generates summary with a custom link 1`] = `
 "# Table of contents
 
 * [☄ Welcome to the wiki!](README.md)
-  * ./tests/__test_summary__/console/MY_ROOT_DOCUMENT.md
+  * console/MY_ROOT_DOCUMENT.md
     * console_bottom.md
-  * ./tests/__test_summary__/io/MY_ROOT_DOCUMENT.md
+  * io/MY_ROOT_DOCUMENT.md
     * io_open.md
 "
 `;

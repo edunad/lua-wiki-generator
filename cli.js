@@ -25,6 +25,16 @@ require('yargs')(hideBin(process.argv)) // eslint-disable-line
         describe: 'Output path',
         demandOption: true,
     })
+    .option('glob', {
+        alias: 'g',
+        describe: 'Glob pattern',
+        demandOption: false,
+    })
+    .option('silent', {
+        alias: 'si',
+        describe: 'Disable output',
+        demandOption: false,
+    })
     .option('method', {
         alias: 'm',
         describe: 'Method template path',
@@ -68,6 +78,9 @@ require('yargs')(hideBin(process.argv)) // eslint-disable-line
         if (argv.gvar) gvarTemplate = await readFile(argv.gvar, 'utf8');
 
         await new IASWikiExtract(argv.path, argv.out, {
+            glob: argv.glob,
+            silent: argv.silent,
+
             templates: {
                 summary: summaryTemplate,
                 method: methodTemplate,

@@ -10,26 +10,33 @@ const events = require('events');
  * @class
  */
 module.exports = class LuaParser {
+    #basePath;
+    #filePath;
+
+    #linkMap;
+
     #currentCommentBlock;
     #currentMode;
     #parsedBlocks;
-    #filePath;
     #foundBlock;
 
     /**
      * @constructor
      * @param {string} filePath - the input lua file
      */
-    constructor(path) {
-        this.#filePath = path;
+    constructor(basePath, filePath) {
+        this.#basePath = basePath;
+        this.#filePath = filePath;
+
+        this.#linkMap = {};
     }
 
     /**
      * Parse the lua file
-     * @returns {Promise<void>}
+     * @returns {Promise<object>}
      */
     parseLua = async () => {
-        const stream = fs.createReadStream(this.#filePath, 'utf8');
+        const stream = fs.createReadStream(`${this.#basePath}/${this.#filePath}`, 'utf8');
         const rl = readline.createInterface({
             input: stream,
             crlfDelay: Infinity,
@@ -43,8 +50,14 @@ module.exports = class LuaParser {
         await events.once(rl, 'close');
 
         // Finish
-        if (this.#parsedBlocks.length <= 0) console.warn(`File ${this.#filePath} has no lua documentation?`);
-        return Promise.resolve(this.#parsedBlocks);
+        if (this.#parsedBlocks.length <= 0) console.warn(`File ${this.#basePath}/${this.#filePath} has no lua documentation?`);
+
+        return Promise.resolve({
+            blocks: this.#parsedBlocks,
+
+            linkMap: this.#linkMap,
+            file: this.#filePath,
+        });
     };
 
     /**
@@ -52,12 +65,11 @@ module.exports = class LuaParser {
      * @returns {void}
      */
     #reset = () => {
+        this.#linkMap = {};
+
         this.#currentCommentBlock = this.#getDefaultBlock();
         this.#currentMode = 'NONE';
-        this.#parsedBlocks = {
-            file: this.#filePath,
-            blocks: [],
-        };
+        this.#parsedBlocks = [];
     };
 
     /**
@@ -102,12 +114,13 @@ module.exports = class LuaParser {
      * @returns {boolean}
      */
     #isLuaPrimitive = (type) => {
-        const primitives = ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table', 'any', 'void'];
+        return ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table', 'any', 'void'].includes(
+            this.#cleanType(type),
+        );
+    };
 
-        const fixedStr = type.toLowerCase().trim();
-        const name = fixedStr.split('[')[0];
-
-        return primitives.includes(fixedStr) || primitives.includes(name);
+    #cleanType = (type) => {
+        return type.toLowerCase().trim().split('[')[0];
     };
 
     /**
@@ -190,7 +203,7 @@ module.exports = class LuaParser {
         const fields = fieldRegex[0];
         if (!fields || fields.length < 1) return null;
 
-        const typeField = fields[2] || '';
+        const typeField = fields[2] ?? '';
         const isOptional = typeField.indexOf('?') !== -1;
 
         return {
@@ -303,6 +316,11 @@ module.exports = class LuaParser {
         };
     };
 
+    #addParsedBlock = (data) => {
+        this.#parsedBlocks.push(data);
+        this.#linkMap[data.title.msg] = this.#filePath;
+    };
+
     /**
      * Parses the given line
      * @param {string} line - the current line to parse
@@ -319,7 +337,7 @@ module.exports = class LuaParser {
                     // ex: function console:execute(args) end
                     const methodData = this.#extractMethod(line);
                     if (methodData && methodData.length >= 3) {
-                        this.#parsedBlocks.blocks.push({
+                        this.#addParsedBlock({
                             type: 'METHOD',
                             title: {
                                 msg: methodData[1].trim(),
@@ -332,7 +350,7 @@ module.exports = class LuaParser {
                 } else if (this.#isExtensionMethod(trimmedLine)) {
                     const methodData = this.#extractExtension(line);
                     if (methodData && methodData.length >= 3) {
-                        this.#parsedBlocks.blocks.push({
+                        this.#addParsedBlock({
                             type: 'EXTENSION',
                             title: {
                                 msg: methodData[1].trim(),
@@ -345,7 +363,7 @@ module.exports = class LuaParser {
                 } else if (this.#isClass(trimmedLine)) {
                     const methodData = this.#extractClass(line);
                     if (methodData && methodData.length >= 1) {
-                        this.#parsedBlocks.blocks.push({
+                        this.#addParsedBlock({
                             type: 'CLASS',
                             title: {
                                 msg: methodData[1].trim(),
@@ -358,7 +376,7 @@ module.exports = class LuaParser {
                 } else if (this.#isGVar(trimmedLine)) {
                     const gVarData = this.#extractGVar(line);
                     if (gVarData && gVarData.length >= 1) {
-                        this.#parsedBlocks.blocks.push({
+                        this.#addParsedBlock({
                             type: 'GVAR',
                             title: {
                                 msg: gVarData[1].trim(),
