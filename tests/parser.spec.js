@@ -35,18 +35,27 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.examples.length).toBe(0);
 
         expect(data.blocks[0].commentBlock.fields).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.fields.length).toBe(3);
+        expect(data.blocks[0].commentBlock.fields.length).toBe(5);
         expect(data.blocks[0].commentBlock.fields[0].name).toBe('pos');
         expect(data.blocks[0].commentBlock.fields[0].type).toBe('Vector');
         expect(data.blocks[0].commentBlock.fields[0].link).toBe('Vector');
+        expect(data.blocks[0].commentBlock.fields[0].optional).toBe(true);
 
         expect(data.blocks[0].commentBlock.fields[1].name).toBe('size');
         expect(data.blocks[0].commentBlock.fields[1].type).toBe('Vector');
         expect(data.blocks[0].commentBlock.fields[1].link).toBe('Vector');
 
-        expect(data.blocks[0].commentBlock.fields[2].name).toBe('meep');
-        expect(data.blocks[0].commentBlock.fields[2].type).toBe('');
-        expect(data.blocks[0].commentBlock.fields[2].link).toBe(null);
+        expect(data.blocks[0].commentBlock.fields[2].name).toBe('cookies');
+        expect(data.blocks[0].commentBlock.fields[2].type).toBe('Vector[]');
+        expect(data.blocks[0].commentBlock.fields[2].link).toBe('Vector');
+
+        expect(data.blocks[0].commentBlock.fields[3].name).toBe('a');
+        expect(data.blocks[0].commentBlock.fields[3].type).toBe('number');
+        expect(data.blocks[0].commentBlock.fields[3].link).toBe(null);
+
+        expect(data.blocks[0].commentBlock.fields[4].name).toBe('meep');
+        expect(data.blocks[0].commentBlock.fields[4].type).toBe('');
+        expect(data.blocks[0].commentBlock.fields[4].link).toBe(null);
 
         expect(data.blocks[0].commentBlock.hints).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.hints.length).toBe(0);
@@ -118,7 +127,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.params.length).toBe(4);
         expect(data.blocks[0].commentBlock.params[0].description).toBe('No description');
         expect(data.blocks[0].commentBlock.params[0].name).toBe('args');
-        expect(data.blocks[0].commentBlock.params[0].optional).toBe(false);
+        expect(data.blocks[0].commentBlock.params[0].optional).toBe(true);
         expect(data.blocks[0].commentBlock.params[0].type).toBe('string[]');
         expect(data.blocks[0].commentBlock.params[0].link).toBe(null);
     });

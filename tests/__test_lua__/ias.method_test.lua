@@ -2,7 +2,7 @@
 
 ---
 ---@env SHARED
----@param args string[]
+---@param args? string[]
 ---@param var number|string|boolean
 ---@return boolean "If command was executed successfully"
 ---@return string

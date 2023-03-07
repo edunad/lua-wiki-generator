@@ -115,12 +115,17 @@ module.exports = class LuaParser {
      */
     #isLuaPrimitive = (type) => {
         return ['nil', 'boolean', 'number', 'string', 'function', 'userdata', 'thread', 'table', 'any', 'void'].includes(
-            this.#cleanType(type),
+            this.#cleanType(type).toLowerCase(),
         );
     };
 
+    /**
+     * Returns the type without []
+     * @param {string} type - the type to check
+     * @returns {boolean}
+     */
     #cleanType = (type) => {
-        return type.toLowerCase().trim().split('[')[0];
+        return type.trim().split('[')[0];
     };
 
     /**
@@ -183,7 +188,7 @@ module.exports = class LuaParser {
                 description: rawParams[3] || 'No description',
                 optional: isOptional,
 
-                link: this.#isLuaPrimitive(param) ? null : param,
+                link: this.#isLuaPrimitive(param) ? null : this.#cleanType(param),
             });
         });
 
@@ -203,15 +208,15 @@ module.exports = class LuaParser {
         const fields = fieldRegex[0];
         if (!fields || fields.length < 1) return null;
 
+        const isOptional = fields[1].indexOf('?') !== -1;
         const typeField = fields[2] ?? '';
-        const isOptional = typeField.indexOf('?') !== -1;
 
         return {
-            name: fields[1],
+            name: fields[1].replace('?', ''),
             type: typeField,
             optional: isOptional,
 
-            link: typeField === '' ? null : this.#isLuaPrimitive(typeField) ? null : typeField,
+            link: typeField === '' ? null : this.#isLuaPrimitive(typeField) ? null : this.#cleanType(typeField),
         };
     };
 
@@ -232,7 +237,7 @@ module.exports = class LuaParser {
             type: returns[1],
             description: returns[2] || 'No description',
 
-            link: this.#isLuaPrimitive(returns[1]) ? null : returns[1],
+            link: this.#isLuaPrimitive(returns[1]) ? null : this.#cleanType(returns[1]),
         };
     };
 
@@ -341,7 +346,7 @@ module.exports = class LuaParser {
                             type: 'METHOD',
                             title: {
                                 msg: methodData[1].trim(),
-                                link: this.#isLuaPrimitive(methodData[2]) ? null : methodData[2],
+                                link: this.#isLuaPrimitive(methodData[2]) ? null : this.#cleanType(methodData[2]),
                             },
                             method: methodData[0].replace('function', this.#buildReturn(this.#currentCommentBlock.returns)),
                             commentBlock: this.#currentCommentBlock,

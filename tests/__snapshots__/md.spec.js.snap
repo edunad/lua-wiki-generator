@@ -11,8 +11,10 @@ AABB's entry class<br/>
 
 | Type   | Name | Optional |
 | ------ | ---- | -------: |
-| [Vector](vector/README.md) | pos |   |
+| [Vector](vector/README.md) | pos | ✔ |
 | [Vector](vector/README.md) | size |   |
+| [Vector](vector/README.md) | cookies |   |
+| number | a |   |
 |  | meep |   |
 "
 `;
@@ -93,7 +95,7 @@ console:execute({"my_command", "true"})
 
 | Type   | Name | Description | Optional |
 | ------ | ---- | ----------- | -------: |
-| string[] | args | No description |   |
+| string[] | args | No description | ✔ |
 | number | var | No description |   |
 | string | var | No description |   |
 | boolean | var | No description |   |
