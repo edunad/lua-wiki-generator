@@ -313,8 +313,8 @@ module.exports = class MDGenerator {
             if (link) return `[${data.title.link}](${link}/README.md)${data.title.msg.replace(data.title.link, '')}`;
             return `${data.title.msg}`;
         } else if (type === '$PARAMETERS$' || type === '$RETURNS$' || type === '$FIELDS$') {
-            if (link) return `[${data.link}](${link}/README.md)`;
-            return `${data.link}`;
+            if (link) return `[${data.type}](${link}/README.md)`;
+            return `${data.type}`;
         }
 
         throw new Error(`Unknown type: ${type}`);

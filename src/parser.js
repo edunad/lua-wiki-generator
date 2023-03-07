@@ -185,7 +185,7 @@ module.exports = class LuaParser {
             ret.push({
                 name: rawParams[1].replace('?', ''),
                 type: param,
-                description: rawParams[3] || 'No description',
+                description: rawParams[3] ?? 'No description',
                 optional: isOptional,
 
                 link: this.#isLuaPrimitive(param) ? null : this.#cleanType(param),
@@ -235,7 +235,7 @@ module.exports = class LuaParser {
 
         return {
             type: returns[1],
-            description: returns[2] || 'No description',
+            description: returns[2] ?? 'No description',
 
             link: this.#isLuaPrimitive(returns[1]) ? null : this.#cleanType(returns[1]),
         };
@@ -318,6 +318,7 @@ module.exports = class LuaParser {
             description: [],
             examples: [],
             deprecated: [],
+            unknown: [],
         };
     };
 
@@ -415,6 +416,8 @@ module.exports = class LuaParser {
             } else if (line.startsWith('---@deprecated')) {
                 const ret = this.#parseDeprecated(line);
                 if (ret) this.#currentCommentBlock.deprecated.push(ret);
+            } else if (line.startsWith('---@')) {
+                this.#currentCommentBlock.unknown.push(line.replace('---@', ''));
             } else if (line.startsWith('---*')) {
                 this.#currentCommentBlock.description.push(line.replace('---*', '').trim());
             } else if (line.startsWith('---```lua')) {

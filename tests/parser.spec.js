@@ -87,7 +87,7 @@ describe('LUAParser', () => {
         expect(data.blocks[0].title.msg).toBe('console:execute');
         expect(data.blocks[0].title.link).toBe('console');
 
-        expect(data.blocks[0].method).toBe('boolean, string console:execute(args, var)');
+        expect(data.blocks[0].method).toBe('boolean, string[], Vector[] console:execute(args, var)');
         expect(data.blocks[0].commentBlock).not.toBe(undefined);
 
         expect(data.blocks[0].commentBlock.description).not.toBe(undefined);
@@ -115,13 +115,16 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.hints[1].type).toBe('danger');
 
         expect(data.blocks[0].commentBlock.returns).not.toBe(undefined);
-        expect(data.blocks[0].commentBlock.returns.length).toBe(2);
+        expect(data.blocks[0].commentBlock.returns.length).toBe(3);
         expect(data.blocks[0].commentBlock.returns[0].description).toBe('If command was executed successfully');
         expect(data.blocks[0].commentBlock.returns[0].type).toBe('boolean');
         expect(data.blocks[0].commentBlock.returns[0].link).toBe(null);
-        expect(data.blocks[0].commentBlock.returns[1].description).toBe('No description');
-        expect(data.blocks[0].commentBlock.returns[1].type).toBe('string');
+        expect(data.blocks[0].commentBlock.returns[1].description).toBe('test');
+        expect(data.blocks[0].commentBlock.returns[1].type).toBe('string[]');
         expect(data.blocks[0].commentBlock.returns[1].link).toBe(null);
+        expect(data.blocks[0].commentBlock.returns[2].description).toBe('test');
+        expect(data.blocks[0].commentBlock.returns[2].type).toBe('Vector[]');
+        expect(data.blocks[0].commentBlock.returns[2].link).toBe('Vector');
 
         expect(data.blocks[0].commentBlock.params).not.toBe(undefined);
         expect(data.blocks[0].commentBlock.params.length).toBe(4);
@@ -130,6 +133,12 @@ describe('LUAParser', () => {
         expect(data.blocks[0].commentBlock.params[0].optional).toBe(true);
         expect(data.blocks[0].commentBlock.params[0].type).toBe('string[]');
         expect(data.blocks[0].commentBlock.params[0].link).toBe(null);
+
+        expect(data.blocks[0].commentBlock.unknown).not.toBe(undefined);
+        expect(data.blocks[0].commentBlock.unknown.length).toBe(3);
+        expect(data.blocks[0].commentBlock.unknown[0]).toBe('meta');
+        expect(data.blocks[0].commentBlock.unknown[1]).toBe('custom "bla"');
+        expect(data.blocks[0].commentBlock.unknown[2]).toBe('custom2 "bla2"');
     });
 
     it('Parses extensions', async () => {

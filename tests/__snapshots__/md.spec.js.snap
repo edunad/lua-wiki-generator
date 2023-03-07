@@ -13,7 +13,7 @@ AABB's entry class<br/>
 | ------ | ---- | -------: |
 | [Vector](vector/README.md) | pos | ✔ |
 | [Vector](vector/README.md) | size |   |
-| [Vector](vector/README.md) | cookies |   |
+| [Vector[]](vector/README.md) | cookies |   |
 | number | a |   |
 |  | meep |   |
 "
@@ -80,7 +80,7 @@ OH NOOOOOOO
 
 
 \`\`\`lua
-boolean, string console:execute(args, var)
+boolean, string[], Vector[] console:execute(args, var)
 \`\`\`
 
 Executes a console command programmatically<br/>
@@ -106,7 +106,8 @@ console:execute({"my_command", "true"})
 | Type   | Description |
 | ------ | ----------: |
 | boolean | If command was executed successfully |
-| string | No description |
+| string[] | test |
+| Vector[] | test |
 "
 `;
 
