@@ -71,7 +71,8 @@ module.exports = class WikiExtract {
     }
 
     warn = (txt, ...args) => {
-        if (this.#options.silent) return;
+        const skipOutput = this.#options.silent ?? false;
+        if (skipOutput) return;
         console.warn(txt, ...args);
     };
 
@@ -109,7 +110,7 @@ module.exports = class WikiExtract {
      * @returns {Promise<void>}
      */
     #cleanOutput = async () => {
-        const cleanOutput = this.#options.clean || true;
+        const cleanOutput = this.#options.clean ?? true;
         if (cleanOutput) await fs.remove(this.#outputPath);
         await fs.ensureDir(this.#outputPath);
     };

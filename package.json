@@ -1,6 +1,6 @@
 {
     "name": "@edunad/lua-wiki-generator",
-    "packageManager": "yarn@3.2.3",
+    "packageManager": "yarn@3.6.3",
     "version": "1.0.8",
     "author": "FailCake (edunad)",
     "repository": {
@@ -27,14 +27,14 @@
     },
     "devDependencies": {
         "copy-webpack-plugin": "^11.0.0",
-        "webpack": "^5.74.0",
-        "webpack-cli": "^4.10.0",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
         "webpack-node-externals": "^3.0.0"
     },
     "dependencies": {
-        "fast-glob": "^3.2.12",
-        "fs-extra": "^10.1.0",
-        "jest": "^29.0.3",
-        "yargs": "^17.5.1"
+        "fast-glob": "^3.3.1",
+        "fs-extra": "^11.1.1",
+        "jest": "^29.7.0",
+        "yargs": "^17.7.2"
     }
 }
